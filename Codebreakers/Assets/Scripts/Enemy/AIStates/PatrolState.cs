@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class PatrolState : AIInterface
 {
-    private readonly EnemyAIController enemyAI;    
+    private readonly EnemyAIController enemyAI;
+
+    private int currentPatrolPoint = 0;
+    private bool arrivedOnTarget;
+    private float waitingOnPoint = 0f;
+    private float waitingTime = .5f;
 
     public PatrolState(EnemyAIController enemyAIController)
     {
@@ -14,34 +19,55 @@ public class PatrolState : AIInterface
     public void ToChaseState()
     {
         Debug.Log("To Chase State");
+        enemyAI.enemyMovement.target = enemyAI.player.transform;
         enemyAI.currentState = enemyAI.chaseState;
+    }
+
+    public void ToPatrolState()
+    {
+        throw new System.NotImplementedException();
     }
 
     public void UpdateState()
     {
-        if (FindPlayer())
+        if (enemyAI.stats.canMove && enemyAI.patrolWaypoints.Length > 0)
         {
-            ToChaseState();
-        }
-    }
+            enemyAI.enemyMovement.Move(enemyAI.stats.patrolSpeed);
 
-    private bool FindPlayer()
-    {
-        Vector2 playerDirection = (Vector2)(enemyAI.player.transform.position - enemyAI.transform.position);
-        Vector2 direction = playerDirection.normalized;
 
-        float angle = Vector2.Angle(enemyAI.transform.right, direction);
+            float distance = Vector2.Distance(enemyAI.transform.position, enemyAI.enemyMovement.target.transform.position);
 
-        if (angle <= enemyAI.stats.maxAngle)
-        {
-            if (playerDirection.x <= enemyAI.stats.lookRange)
+            if (distance <= enemyAI.stats.nextWaypointDistance - 0.01f)
+                arrivedOnTarget = true;
+            
+
+            if (arrivedOnTarget)
             {
-                return true;
+                Debug.Log("Arrived on Point");
+
+                if (waitingOnPoint >= waitingTime)
+                {
+                    currentPatrolPoint++;
+
+                    if (currentPatrolPoint >= enemyAI.patrolWaypoints.Length)
+                        currentPatrolPoint = 0;
+
+                    waitingOnPoint = 0f;
+                    arrivedOnTarget = false;
+
+                    enemyAI.enemyMovement.target = enemyAI.patrolWaypoints[currentPatrolPoint];
+                }
+                else
+                    waitingOnPoint += Time.deltaTime;
             }
+
         }
 
-        return false;
+        if (enemyAI.FindPlayer())
+            ToChaseState();
     }
+
+   
 
 
 }

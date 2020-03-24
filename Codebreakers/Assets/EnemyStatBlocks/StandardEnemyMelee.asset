@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthPoints: 100
   moveSpeed: 400
+  patrolSpeed: 300
+  jumpHeight: 10
   maxAngle: 35
   lookRange: 10
-  nextWaypointDistance: 3
+  jumpRange: 2.5
+  nextWaypointDistance: 2
+  timeChaseLost: 3
   canMove: 1
   canFly: 0
   meleeAttack: 1

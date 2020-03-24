@@ -6,10 +6,15 @@ using UnityEngine;
 public class EnemyStats : ScriptableObject 
 {
     public float healthPoints = 100f;
-    public float moveSpeed = 1;
+    public float moveSpeed = 400;
+    public float patrolSpeed = 200f;
+    public float jumpHeight = 1f;
     public float maxAngle;
     public float lookRange = 40f;
+    public float jumpRange = 15f;
     public float nextWaypointDistance = 3f;
+
+    public float timeChaseLost = 3f;
 
 
     public bool canMove = true;

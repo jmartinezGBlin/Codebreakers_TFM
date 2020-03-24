@@ -7,4 +7,5 @@ public interface AIInterface
     void UpdateState();
 
     void ToChaseState();
+    void ToPatrolState();
 }
