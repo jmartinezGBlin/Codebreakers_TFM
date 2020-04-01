@@ -8,4 +8,7 @@ public interface AIInterface
 
     void ToChaseState();
     void ToPatrolState();
+    void ToSearchState();
+    void ToShootState();
+    void ToMeleeState();
 }

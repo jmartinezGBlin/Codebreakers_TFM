@@ -23,7 +23,22 @@ public class PatrolState : AIInterface
         enemyAI.currentState = enemyAI.chaseState;
     }
 
+    public void ToMeleeState()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void ToPatrolState()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void ToSearchState()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void ToShootState()
     {
         throw new System.NotImplementedException();
     }
@@ -43,8 +58,6 @@ public class PatrolState : AIInterface
 
             if (arrivedOnTarget)
             {
-                Debug.Log("Arrived on Point");
-
                 if (waitingOnPoint >= waitingTime)
                 {
                     currentPatrolPoint++;

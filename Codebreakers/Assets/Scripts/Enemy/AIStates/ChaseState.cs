@@ -16,6 +16,12 @@ public class ChaseState : AIInterface
 
     public void ToChaseState()
     {
+        Debug.Log("To Chase State");
+        enemyAI.currentState = enemyAI.chaseState;
+    }
+
+    public void ToMeleeState()
+    {
         throw new System.NotImplementedException();
     }
 
@@ -23,6 +29,17 @@ public class ChaseState : AIInterface
     {
         Debug.Log("To Patrol State");
         enemyAI.currentState = enemyAI.patrolState;
+    }
+
+    public void ToSearchState()
+    {
+        Debug.Log("To Search State");
+        enemyAI.currentState = enemyAI.searchState;
+    }
+
+    public void ToShootState()
+    {
+        throw new System.NotImplementedException();
     }
 
     public void UpdateState()
@@ -36,7 +53,7 @@ public class ChaseState : AIInterface
         if (!enemyAI.FindPlayer())
         {
             if (timePlayerLost >= enemyAI.stats.timeChaseLost)
-                ToPatrolState();
+                ToSearchState();
             else
                 timePlayerLost += Time.deltaTime;
         }

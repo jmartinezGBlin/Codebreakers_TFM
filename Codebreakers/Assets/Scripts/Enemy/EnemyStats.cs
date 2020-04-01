@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Scripts/Enemy/EnemyStats")]
 public class EnemyStats : ScriptableObject 
 {
-    public float healthPoints = 100f;
+    public int healthPoints = 100;
     public float moveSpeed = 400;
     public float patrolSpeed = 200f;
     public float jumpHeight = 1f;

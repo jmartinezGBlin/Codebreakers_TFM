@@ -5,15 +5,13 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public CharacterController2D controller;
-
-    public float runSpeed = 40f;
-
+    
     private float horizontalMove = 0f;
     private bool jump = false;
 
     private void Update()
     {
-        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        horizontalMove = Input.GetAxisRaw("Horizontal") * controller.stats.moveSpeed;
 
         if (Input.GetButtonDown("Jump"))
         {

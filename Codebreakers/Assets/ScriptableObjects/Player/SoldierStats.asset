@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad982109285f0f646be32cfad5355ca9, type: 3}
+  m_Name: SoldierStats
+  m_EditorClassIdentifier: 
+  healthPoints: 100
+  moveSpeed: 40
+  jumpForce: 400
+  meleeRange: 0.5
+  meleeSpeedAttack: 1
+  meleeDamage: 20
+  meleeKnockback: 400
+  shootType: 0
+  rangedRange: 4
+  rangeAttackRate: 0.25
+  rangeDamage: 25
+  rangeKnockback: 0
+  bulletSpeed: 20

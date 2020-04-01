@@ -104,15 +104,13 @@ public class EnemyMovement : MonoBehaviour
 
     private void CheckDirection(Vector2 force)
     {
-        if (force.x >= 0.01f)
+        if (force.x >= 0.1f && facingRight)
         {
-            GFX.localScale = new Vector3(-1f, 1f, 1f);
-            facingRight = true;
+            Flip();
         }
-        else if (force.x <= -0.01f)
+        else if (force.x <= -0.1f &! facingRight)
         {
-            GFX.localScale = new Vector3(1f, 1f, 1f);
-            facingRight = false;
+            Flip();
         }
     }
 
@@ -142,5 +140,13 @@ public class EnemyMovement : MonoBehaviour
         }
 
         return jump;
+    }
+    
+    public void Flip()
+    {
+        // Switch the way the player is labelled as facing.
+        facingRight  = !facingRight ;
+
+        transform.Rotate(0f, 180f, 0f);
     }
 }

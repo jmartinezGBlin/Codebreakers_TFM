@@ -3,7 +3,22 @@ using UnityEngine.Events;
 
 public class CharacterController2D : MonoBehaviour
 {
-	[SerializeField] private float m_JumpForce = 400f;							// Amount of force added when the player jumps.
+    //STATS del PJ
+    public PlayerStats stats;
+    [HideInInspector] public float meleeRange;
+    [HideInInspector] public int meleeDamage;
+    [HideInInspector] public float meleeKnockback;
+    [HideInInspector] public float attackRate;
+
+    [HideInInspector] public PlayerStats.ShootType shootType;
+    [HideInInspector] public float shootRange;
+    [HideInInspector] public int shootDamage;
+    [HideInInspector] public float shootKnockback;
+    [HideInInspector] public float shootRate;
+    [HideInInspector] public float bulletSpeed;
+    //*******************************************************************************************************************************
+
+    private float m_JumpForce;							// Amount of force added when the player jumps.
 	[Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .36f;			// Amount of maxSpeed applied to crouching movement. 1 = 100%
 	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;	// How much to smooth out the movement
 	[SerializeField] private bool m_AirControl = false;							// Whether or not a player can steer while jumping;
@@ -41,7 +56,24 @@ public class CharacterController2D : MonoBehaviour
 			OnCrouchEvent = new BoolEvent();
 	}
 
-	private void FixedUpdate()
+    private void Start()
+    {
+        meleeRange = stats.meleeRange;
+        meleeDamage = stats.meleeDamage;
+        meleeKnockback = stats.meleeKnockback;
+        attackRate = stats.meleeSpeedAttack;
+
+        shootType = stats.shootType;
+        shootRange = stats.rangedRange;
+        shootDamage = stats.rangeDamage;
+        shootKnockback = stats.rangeKnockback;
+        shootRate = stats.rangeAttackRate;
+        bulletSpeed = stats.bulletSpeed;
+
+        m_JumpForce = stats.jumpForce;
+    }
+
+    private void FixedUpdate()
 	{
 		bool wasGrounded = m_Grounded;
 		m_Grounded = false;
