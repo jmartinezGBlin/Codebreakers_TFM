@@ -3,19 +3,7 @@ using UnityEngine.Events;
 
 public class CharacterController2D : MonoBehaviour
 {
-    //STATS del PJ
     public PlayerStats stats;
-    [HideInInspector] public float meleeRange;
-    [HideInInspector] public int meleeDamage;
-    [HideInInspector] public float meleeKnockback;
-    [HideInInspector] public float attackRate;
-
-    [HideInInspector] public PlayerStats.ShootType shootType;
-    [HideInInspector] public float shootRange;
-    [HideInInspector] public int shootDamage;
-    [HideInInspector] public float shootKnockback;
-    [HideInInspector] public float shootRate;
-    [HideInInspector] public float bulletSpeed;
     //*******************************************************************************************************************************
 
     private float m_JumpForce;							// Amount of force added when the player jumps.
@@ -58,18 +46,6 @@ public class CharacterController2D : MonoBehaviour
 
     private void Start()
     {
-        meleeRange = stats.meleeRange;
-        meleeDamage = stats.meleeDamage;
-        meleeKnockback = stats.meleeKnockback;
-        attackRate = stats.meleeSpeedAttack;
-
-        shootType = stats.shootType;
-        shootRange = stats.rangedRange;
-        shootDamage = stats.rangeDamage;
-        shootKnockback = stats.rangeKnockback;
-        shootRate = stats.rangeAttackRate;
-        bulletSpeed = stats.bulletSpeed;
-
         m_JumpForce = stats.jumpForce;
     }
 

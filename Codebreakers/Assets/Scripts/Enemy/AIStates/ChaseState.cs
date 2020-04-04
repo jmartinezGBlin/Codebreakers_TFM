@@ -20,11 +20,6 @@ public class ChaseState : AIInterface
         enemyAI.currentState = enemyAI.chaseState;
     }
 
-    public void ToMeleeState()
-    {
-        throw new System.NotImplementedException();
-    }
-
     public void ToPatrolState()
     {
         Debug.Log("To Patrol State");
@@ -37,27 +32,61 @@ public class ChaseState : AIInterface
         enemyAI.currentState = enemyAI.searchState;
     }
 
-    public void ToShootState()
-    {
-        throw new System.NotImplementedException();
-    }
-
     public void UpdateState()
     {
-        if (enemyAI.stats.canMove)
-            enemyAI.enemyMovement.Move(enemyAI.stats.moveSpeed);
-
-        if (enemyAI.enemyMovement.CheckObstacleForward())
-            enemyAI.enemyMovement.Jump();
-
-        if (!enemyAI.FindPlayer())
+        if (CheckMeleeDistance() && enemyAI.stats.meleeAttack && enemyAI.FindPlayer())
         {
-            if (timePlayerLost >= enemyAI.stats.timeChaseLost)
-                ToSearchState();
-            else
-                timePlayerLost += Time.deltaTime;
+            enemyAI.Attack();
         }
         else
-            timePlayerLost = 0f;
+        {
+            if (CheckRangedDistance() && enemyAI.stats.rangedAttack && enemyAI.FindPlayer())
+            {
+                enemyAI.Shoot();
+            }
+            else
+            {
+               
+                if (enemyAI.stats.canMove)
+                {
+                    enemyAI.enemyMovement.Move(enemyAI.stats.moveSpeed);
+
+                    if (enemyAI.enemyMovement.CheckObstacleForward())
+                        enemyAI.enemyMovement.Jump();
+                }
+
+                
+                if (!enemyAI.FindPlayer())
+                {
+                    if (timePlayerLost >= enemyAI.stats.timeChaseLost)
+                        ToSearchState();
+                    else
+                        timePlayerLost += Time.deltaTime;
+                }
+                else
+                    timePlayerLost = 0f;
+            }
+        }
+        
+    }
+
+    private bool CheckRangedDistance()
+    {
+        float distance = (enemyAI.player.transform.position - enemyAI.transform.position).x;
+
+        if (Mathf.Abs(distance) <= enemyAI.stats.rangedRange)
+            return true;
+        else
+            return false;
+    }
+
+    private bool CheckMeleeDistance()
+    {
+        float distance = (enemyAI.player.transform.position - enemyAI.attackPoint.transform.position).x;   
+
+        if (Mathf.Abs(distance) <= enemyAI.stats.meleeRange)
+            return true;
+        else
+            return false;
     }
 }

@@ -7,66 +7,113 @@ public class PlayerCombat : MonoBehaviour
     public Transform attackPoint;
     public GameObject bulletPrefab;
     public LayerMask enemyLayers;
+    public float hitTime;
 
-    private CharacterController2D stats;
+    private CharacterController2D characterController;
 
     private float attackCooldown;
     private float shootCooldown;
+    private int actualHealth;
+    private Rigidbody2D rb;
+    private SceneController sceneController;
+    private Renderer rend;
+    private Color rendColor;
+    private bool invulnerable = false;
 
     private void Start()
     {
-        stats = GetComponent<CharacterController2D>();
-        attackCooldown = stats.attackRate;
-        shootCooldown = stats.shootRate;
+        characterController = GetComponent<CharacterController2D>();
+        rb = GetComponent<Rigidbody2D>();
+        sceneController = FindObjectOfType<SceneController>();
+        rend = GetComponent<Renderer>();
+
+        rendColor = rend.material.color;
+        attackCooldown = characterController.stats.meleeSpeedAttack;
+        shootCooldown = characterController.stats.rangeAttackRate;
+        actualHealth = characterController.stats.healthPoints;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && shootCooldown >= stats.shootRate)
+
+        if (Input.GetButtonDown("Fire1") && shootCooldown >= characterController.stats.rangeAttackRate)
         {
             Shoot();
             shootCooldown = 0f;
         }
-        else if (shootCooldown < stats.shootRate)
+        else if (shootCooldown < characterController.stats.rangeAttackRate)
             shootCooldown += Time.deltaTime;
 
 
-        if (Input.GetKeyDown(KeyCode.E) && attackCooldown >= stats.attackRate)
+        if (Input.GetKeyDown(KeyCode.E) && attackCooldown >= characterController.stats.meleeSpeedAttack)
         {
             Attack();
             attackCooldown = 0f;
         }
-        else if (attackCooldown < stats.attackRate)
+        else if (attackCooldown < characterController.stats.meleeSpeedAttack)
             attackCooldown += Time.deltaTime;
     }
 
     private void Shoot()
     {
-        if (stats.shootType == PlayerStats.ShootType.bullet)
+        if (characterController.stats.shootType == PlayerStats.ShootType.bullet)
         {
-            Instantiate(bulletPrefab, attackPoint.position, attackPoint.rotation);
+            GameObject bullet = Instantiate(bulletPrefab, attackPoint.position, attackPoint.rotation);
+            bullet.GetComponent<Bullet>().shooter = Bullet.Shooter.player;
         }
     }
 
     private void Attack()
     {
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, stats.meleeRange, enemyLayers);
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, characterController.stats.meleeRange, enemyLayers);
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            Vector2 knockbackVector = (enemy.transform.position - transform.position).normalized * stats.meleeKnockback;
+            Vector2 knockbackVector = (enemy.transform.position - transform.position).normalized * characterController.stats.meleeKnockback;
             
 
-            enemy.GetComponent<EnemyAIController>().TakeDamage(stats.meleeDamage, knockbackVector);
+            enemy.GetComponent<EnemyAIController>().TakeDamage(characterController.stats.meleeDamage, knockbackVector);
         }
+    }
+
+    public void TakeDamage(int damage, Vector2 knockback)
+    {
+        if (invulnerable)
+            return;
+
+        actualHealth -= damage;
+
+        StartCoroutine("InvulnerableFrames");
+        rb.AddForce(knockback);
+
+        if (actualHealth <= 0)
+            Die();
+    }
+
+    IEnumerator InvulnerableFrames()
+    {
+        Physics2D.IgnoreLayerCollision(9, 10, true);
+        rendColor.a = 0.5f;
+        rend.material.color = rendColor;
+        invulnerable = true;
+        yield return new WaitForSeconds(hitTime);
+        Physics2D.IgnoreLayerCollision(9, 10, false);
+        rendColor.a = 1f;
+        rend.material.color = rendColor;
+        invulnerable = false;
+    }
+
+    private void Die()
+    {
+        sceneController.GameOver();
     }
 
     private void OnDrawGizmos()
     {
-        if (attackPoint == null || stats == null)
+        if (attackPoint == null || characterController == null)
             return;
 
-        Gizmos.DrawWireSphere(attackPoint.position, stats.meleeRange);
+        Gizmos.DrawWireSphere(attackPoint.position, characterController.stats.meleeRange);
     }
 }

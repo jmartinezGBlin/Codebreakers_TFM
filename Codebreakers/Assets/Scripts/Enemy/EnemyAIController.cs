@@ -8,28 +8,30 @@ public class EnemyAIController : MonoBehaviour
     public Transform player;
     public EnemyStats stats;
     public Transform[] patrolWaypoints;
+    public Transform attackPoint;
+    public GameObject bulletPrefab;
+    public LayerMask playerLayer;
 
     [HideInInspector] public EnemyMovement enemyMovement;
+    [HideInInspector] public Rigidbody2D rb;
+    [HideInInspector] public Transform spawnPoint;
 
     //Acceso a los estados
     [HideInInspector] public AIInterface currentState;
     [HideInInspector] public ChaseState chaseState;
     [HideInInspector] public PatrolState patrolState;
     [HideInInspector] public SearchState searchState;
-    [HideInInspector] public ShootState shootState;
-    [HideInInspector] public MeleeState meleeState;
 
-    private Rigidbody2D rb;
     private CircleCollider2D col;
     private int actualHealth;
+    private float shootingCooldown;
+    private float meleeCooldown;
 
     private void Awake()
     {
         chaseState = new ChaseState(this);
         patrolState = new PatrolState(this);
         searchState = new SearchState(this);
-        shootState = new ShootState(this);
-        meleeState = new MeleeState(this);
     }
 
     private void Start()
@@ -37,6 +39,7 @@ public class EnemyAIController : MonoBehaviour
         enemyMovement = GetComponent<EnemyMovement>();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CircleCollider2D>();
+        spawnPoint = transform;
 
         if (patrolWaypoints.Length == 0)
             enemyMovement.target = this.transform;     //ENEMIGO ESTÁTICO
@@ -45,6 +48,8 @@ public class EnemyAIController : MonoBehaviour
         
         currentState = patrolState;
         actualHealth = stats.healthPoints;
+        shootingCooldown = stats.rangeAttackRate;
+        meleeCooldown = stats.meleeSpeedAttack;
     }
     
 
@@ -60,8 +65,16 @@ public class EnemyAIController : MonoBehaviour
 
     public void TakeDamage(int damage, Vector2 knockback)
     {
+        if (stats.canMove)
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        else
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+
         actualHealth -= damage;
         rb.AddForce(knockback);
+
+        currentState = chaseState;
+        enemyMovement.target = player;
 
         if (actualHealth <= 0)
             Die();
@@ -110,6 +123,43 @@ public class EnemyAIController : MonoBehaviour
         return false;
     }
 
+    public void Shoot()
+    {
+        if (shootingCooldown >= stats.rangeAttackRate)
+        {
+            Debug.Log("Enemy Shooting!!!");
+            if (stats.shootType == EnemyStats.ShootType.bullet)
+            {
+                GameObject bullet = Instantiate(bulletPrefab, attackPoint.position, attackPoint.rotation);
+                bullet.GetComponent<Bullet>().shooter = Bullet.Shooter.enemy;
+
+                shootingCooldown = 0f;
+            }
+        }
+        else
+            shootingCooldown += Time.deltaTime;
+    }
+
+    public void Attack()
+    {
+        if (meleeCooldown >= stats.meleeSpeedAttack)
+        {
+            Debug.Log("Enemy Attack!!!");
+            meleeCooldown = 0f;
+
+            Collider2D hitPlayer = Physics2D.OverlapCircle(attackPoint.position, stats.meleeRange, playerLayer);
+            if (hitPlayer == null)
+                return;
+
+            Vector2 knockbackVector = (hitPlayer.transform.position - transform.position).normalized * stats.meleeKnockback;
+            
+            hitPlayer.GetComponent<PlayerCombat>().TakeDamage(stats.meleeDamage, knockbackVector);
+            meleeCooldown = 0f;
+        }
+        else
+            meleeCooldown += Time.deltaTime;
+    }
+
     /*private bool PlayerMinDistance()
     {
         Collider2D[] colliders = new Collider2D[10];
@@ -133,6 +183,10 @@ public class EnemyAIController : MonoBehaviour
 
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(transform.position, stats.jumpRange);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, stats.rangedRange);
+        Gizmos.DrawWireSphere(attackPoint.position, stats.meleeRange);
 
         Vector3 fovLine1 = Quaternion.AngleAxis(stats.maxAngle, transform.forward) * transform.right * stats.lookRange;
         Vector3 fovLine2 = Quaternion.AngleAxis(-stats.maxAngle, transform.forward) * transform.right * stats.lookRange;

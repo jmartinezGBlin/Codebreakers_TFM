@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Scripts/Enemy/EnemyStats")]
 public class EnemyStats : ScriptableObject 
 {
+    //BASIC STATS
     public int healthPoints = 100;
     public float moveSpeed = 400;
     public float patrolSpeed = 200f;
@@ -16,20 +17,30 @@ public class EnemyStats : ScriptableObject
 
     public float timeChaseLost = 3f;
 
-
+    //
     public bool canMove = true;
     public bool canFly = false;
     public bool meleeAttack = true;
     public bool rangedAttack = false;
 
+    //MELEE ATTACK STATS
     public float meleeRange = .5f;
     public float meleeSpeedAttack = 1f;
-    public float meleeDamage = 10f;
+    public int meleeDamage = 10;
     public float meleeKnockback = 1f;
 
+    //RANGED ATTACK STATS 
+
+    public enum ShootType
+    {
+        bullet,
+        raycast
+    }
+
+    public ShootType shootType = ShootType.bullet;
+    public float bulletSpeed = 20f;
     public float rangedRange = 5f;
     public float rangeAttackRate = 1f;
-    public float rangeDamage = 25f;
+    public int rangeDamage = 25;
     public float rangeKnockback = .1f;
-
 }

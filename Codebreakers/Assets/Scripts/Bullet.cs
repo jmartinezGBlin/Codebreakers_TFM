@@ -5,23 +5,48 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     private Rigidbody2D rb;
-    private PlayerCombat player;
-    private CharacterController2D stats;
 
+    public enum Shooter
+    {
+        player,
+        enemy
+    }
+
+    [HideInInspector] public Shooter shooter;
+    
+    private float bulletSpeed;
+    private float bulletLifeSpawn;
+    private float shootKnockback;
+    private int shootDamage;
     private float bulletLife = 0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.FindObjectOfType<PlayerCombat>();
-        stats = GameObject.FindObjectOfType<CharacterController2D>();
+        if (shooter == Shooter.player)
+        {
+            PlayerStats stats = FindObjectOfType<CharacterController2D>().stats;
+            bulletSpeed = stats.bulletSpeed;
+            bulletLifeSpawn = stats.rangedRange;
+            shootKnockback = stats.rangeKnockback;
+            shootDamage = stats.rangeDamage;
+        }
+        else if (shooter == Shooter.enemy)
+        {
+            EnemyStats stats = FindObjectOfType<EnemyAIController>().stats;
+            bulletSpeed = stats.bulletSpeed;
+            bulletLifeSpawn = 10f;
+            shootKnockback = stats.rangeKnockback;
+            shootDamage = stats.rangeDamage;
+        }
+
         rb = GetComponent<Rigidbody2D>();
-        rb.velocity = transform.right * stats.bulletSpeed;
+        rb.velocity = transform.right * bulletSpeed;
     }
 
     private void Update()
     {
-        if (bulletLife >= stats.shootRange)
+        if (bulletLife >= bulletLifeSpawn)
         {
             Destroy(gameObject);
         }
@@ -33,16 +58,30 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        EnemyAIController enemy = collision.GetComponent<EnemyAIController>();
-
-        if (enemy != null)
+        if (shooter == Shooter.player)
         {
-            Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * stats.shootKnockback;
-            enemy.TakeDamage(stats.shootDamage, knockbackDirection);
-        }
+            EnemyAIController enemy = collision.GetComponent<EnemyAIController>();
+            if (enemy != null)
+            {
+                Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * shootKnockback;
+                enemy.TakeDamage(shootDamage, knockbackDirection);
+            }
 
-        if (!collision.CompareTag("Player"))
-            Destroy(gameObject);
+            if (!collision.CompareTag("Player"))
+                Destroy(gameObject);
+        }
+        else
+        {
+            PlayerCombat enemy = collision.GetComponent<PlayerCombat>();
+            if (enemy != null)
+            {
+                Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * shootKnockback;
+                enemy.TakeDamage(shootDamage, knockbackDirection);
+            }
+
+            if (!collision.CompareTag("Enemy"))
+                Destroy(gameObject);
+        }
     }
 
 }

@@ -24,12 +24,14 @@ MonoBehaviour:
   canMove: 1
   canFly: 0
   meleeAttack: 1
-  rangedAttack: 0
-  meleeRange: 0.5
-  meleeSpeedAttack: 1
-  meleeDamage: 10
-  meleeKnockback: 1
-  rangedRange: 5
+  rangedAttack: 1
+  meleeRange: 1
+  meleeSpeedAttack: 2
+  meleeDamage: 15
+  meleeKnockback: 2000
+  shootType: 0
+  bulletSpeed: 20
+  rangedRange: 8
   rangeAttackRate: 1
-  rangeDamage: 25
+  rangeDamage: 10
   rangeKnockback: 0.1

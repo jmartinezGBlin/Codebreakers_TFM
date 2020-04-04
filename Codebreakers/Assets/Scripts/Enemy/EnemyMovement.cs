@@ -14,7 +14,6 @@ public class EnemyMovement : MonoBehaviour
     //Variables para control del movimiento y Pathfinding
     private Path path;
     private int currentWaypoint = 0;
-    private bool reachedEndOfPath = false;
 
     EnemyAIController enemyAI;
     Seeker seeker;
@@ -31,6 +30,11 @@ public class EnemyMovement : MonoBehaviour
             rb.gravityScale = 0f;
         else
             rb.gravityScale = 1f;
+
+        if (enemyAI.stats.canMove)
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        else
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
 
         InvokeRepeating("UpdateMovement", 0f, .5f);
     }
@@ -60,12 +64,7 @@ public class EnemyMovement : MonoBehaviour
             return;
 
         if (currentWaypoint >= path.vectorPath.Count)
-        {
-            reachedEndOfPath = true;
             return;
-        }
-        else
-            reachedEndOfPath = false;
 
         //Para prevenir fuerzas negativas repentinas por "pasarse" el punto, estod ebe ir antes...
         float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
@@ -123,15 +122,9 @@ public class EnemyMovement : MonoBehaviour
 
     public bool CheckObstacleForward()
     {
-        Vector2 direction = transform.right;
         bool jump = false;
-
-        if (facingRight)
-            direction = transform.right;
-        else
-            direction = -transform.right;
-
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction,enemyAI.stats.jumpRange);
+        
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, enemyAI.stats.jumpRange);
 
         if (hit.collider != null)
         {

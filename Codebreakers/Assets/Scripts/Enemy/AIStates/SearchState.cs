@@ -16,18 +16,19 @@ public class SearchState : AIInterface
     public void ToChaseState()
     {
         Debug.Log("To Chase State");
+        enemyAI.enemyMovement.target = enemyAI.player.transform;
         enemyAI.currentState = enemyAI.chaseState;
-    }
-
-    public void ToMeleeState()
-    {
-        Debug.Log("To Melee State");
-        enemyAI.currentState = enemyAI.meleeState;
     }
 
     public void ToPatrolState()
     {
         Debug.Log("To Patrol State");
+        if (enemyAI.patrolWaypoints.Length > 0)
+            enemyAI.enemyMovement.target = enemyAI.patrolWaypoints[0];
+        else
+            enemyAI.enemyMovement.target = enemyAI.spawnPoint;
+
+
         enemyAI.currentState = enemyAI.patrolState;
     }
 
@@ -36,12 +37,7 @@ public class SearchState : AIInterface
         Debug.Log("To Search State");
         enemyAI.currentState = enemyAI.searchState;
     }
-
-    public void ToShootState()
-    {
-        Debug.Log("To Shoot State");
-        enemyAI.currentState = enemyAI.shootState;
-    }
+    
     //******************************************************************************************************
 
     private float lookTime = 2f;
