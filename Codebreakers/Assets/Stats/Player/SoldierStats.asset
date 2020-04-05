@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthPoints: 100
   moveSpeed: 40
-  jumpForce: 400
+  jumpForce: 800
   meleeRange: 0.5
   meleeSpeedAttack: 1
   meleeDamage: 20

@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerCombat : MonoBehaviour
 {
     public Transform attackPoint;
     public GameObject bulletPrefab;
     public LayerMask enemyLayers;
+    public Image healthBar;
     public float hitTime;
 
     private CharacterController2D characterController;
@@ -31,6 +33,8 @@ public class PlayerCombat : MonoBehaviour
         attackCooldown = characterController.stats.meleeSpeedAttack;
         shootCooldown = characterController.stats.rangeAttackRate;
         actualHealth = characterController.stats.healthPoints;
+
+        healthBar.fillAmount = 1f;
     }
 
     // Update is called once per frame
@@ -83,6 +87,8 @@ public class PlayerCombat : MonoBehaviour
             return;
 
         actualHealth -= damage;
+        
+        healthBar.fillAmount = (float) actualHealth/characterController.stats.healthPoints;
 
         StartCoroutine("InvulnerableFrames");
         rb.AddForce(knockback);
@@ -94,11 +100,13 @@ public class PlayerCombat : MonoBehaviour
     IEnumerator InvulnerableFrames()
     {
         Physics2D.IgnoreLayerCollision(9, 10, true);
+        Physics2D.IgnoreLayerCollision(9, 11, true);
         rendColor.a = 0.5f;
         rend.material.color = rendColor;
         invulnerable = true;
         yield return new WaitForSeconds(hitTime);
         Physics2D.IgnoreLayerCollision(9, 10, false);
+        Physics2D.IgnoreLayerCollision(9, 11, false);
         rendColor.a = 1f;
         rend.material.color = rendColor;
         invulnerable = false;

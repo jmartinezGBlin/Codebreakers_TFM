@@ -24,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
     {
         //Character movement thorugh CharacterController2D
         controller.Move(horizontalMove * Time.fixedDeltaTime, false, jump);
-        jump = false;
+
+        if (jump)
+            jump = false;
     }
 }

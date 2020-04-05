@@ -73,8 +73,9 @@ public class ChaseState : AIInterface
     private bool CheckRangedDistance()
     {
         float distance = (enemyAI.player.transform.position - enemyAI.transform.position).x;
+        float height = (enemyAI.player.transform.position - enemyAI.transform.position).y;
 
-        if (Mathf.Abs(distance) <= enemyAI.stats.rangedRange)
+        if (Mathf.Abs(distance) <= enemyAI.stats.rangedRange && height <= 0.85f)
             return true;
         else
             return false;

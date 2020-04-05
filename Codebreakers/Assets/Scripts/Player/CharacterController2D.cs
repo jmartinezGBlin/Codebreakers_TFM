@@ -66,10 +66,16 @@ public class CharacterController2D : MonoBehaviour
 					OnLandEvent.Invoke();
 			}
 		}
-	}
+
+        if (m_Grounded)
+            m_Rigidbody2D.gravityScale = 1f;
+        else
+            m_Rigidbody2D.gravityScale = 3f;
+
+    }
 
 
-	public void Move(float move, bool crouch, bool jump)
+    public void Move(float move, bool crouch, bool jump)
 	{
 		// If crouching, check to see if the character can stand up
 		if (!crouch)
