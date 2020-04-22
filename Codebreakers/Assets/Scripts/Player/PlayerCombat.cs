@@ -18,8 +18,8 @@ public class PlayerCombat : MonoBehaviour
     private int actualHealth;
     private Rigidbody2D rb;
     private SceneController sceneController;
-    private Renderer rend;
-    private Color rendColor;
+    //private Renderer rend;
+    //private Color rendColor;
     private bool invulnerable = false;
 
     private void Start()
@@ -27,9 +27,9 @@ public class PlayerCombat : MonoBehaviour
         characterController = GetComponent<CharacterController2D>();
         rb = GetComponent<Rigidbody2D>();
         sceneController = FindObjectOfType<SceneController>();
-        rend = GetComponent<Renderer>();
+       // rend = GetComponent<Renderer>();
 
-        rendColor = rend.material.color;
+        //rendColor = rend.material.color;
         attackCooldown = characterController.stats.meleeSpeedAttack;
         shootCooldown = characterController.stats.rangeAttackRate;
         actualHealth = characterController.stats.healthPoints;
@@ -101,14 +101,14 @@ public class PlayerCombat : MonoBehaviour
     {
         Physics2D.IgnoreLayerCollision(9, 10, true);
         Physics2D.IgnoreLayerCollision(9, 11, true);
-        rendColor.a = 0.5f;
-        rend.material.color = rendColor;
+       // rendColor.a = 0.5f;
+       // rend.material.color = rendColor;
         invulnerable = true;
         yield return new WaitForSeconds(hitTime);
         Physics2D.IgnoreLayerCollision(9, 10, false);
         Physics2D.IgnoreLayerCollision(9, 11, false);
-        rendColor.a = 1f;
-        rend.material.color = rendColor;
+      // rendColor.a = 1f;
+//rend.material.color = rendColor;
         invulnerable = false;
     }
 
