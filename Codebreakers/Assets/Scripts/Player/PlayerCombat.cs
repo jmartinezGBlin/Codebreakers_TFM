@@ -5,14 +5,23 @@ using UnityEngine.UI;
 
 public class PlayerCombat : MonoBehaviour
 {
+    public Transform shootingPoint;
     public Transform attackPoint;
     public GameObject bulletPrefab;
     public LayerMask enemyLayers;
     public Image healthBar;
     public float hitTime;
+    public float damageTime;
+    public float attackAnimTime;
+
+    public Transform leftArm;
+    public Transform rightArm;
+
+    [HideInInspector] public bool attacking;
+    [HideInInspector] private bool invulnerable = false;
+
 
     private CharacterController2D characterController;
-
     private float attackCooldown;
     private float shootCooldown;
     private int actualHealth;
@@ -20,13 +29,15 @@ public class PlayerCombat : MonoBehaviour
     private SceneController sceneController;
     //private Renderer rend;
     //private Color rendColor;
-    private bool invulnerable = false;
+    private Animator anim;
+    
 
     private void Start()
     {
         characterController = GetComponent<CharacterController2D>();
         rb = GetComponent<Rigidbody2D>();
         sceneController = FindObjectOfType<SceneController>();
+        anim = GetComponent<Animator>();
        // rend = GetComponent<Renderer>();
 
         //rendColor = rend.material.color;
@@ -40,6 +51,7 @@ public class PlayerCombat : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Aim(Input.GetButton("Fire2"));
 
         if (Input.GetButtonDown("Fire1") && shootCooldown >= characterController.stats.rangeAttackRate)
         {
@@ -63,22 +75,59 @@ public class PlayerCombat : MonoBehaviour
     {
         if (characterController.stats.shootType == PlayerStats.ShootType.bullet)
         {
-            GameObject bullet = Instantiate(bulletPrefab, attackPoint.position, attackPoint.rotation);
+            GameObject bullet = Instantiate(bulletPrefab, shootingPoint.position, shootingPoint.rotation);
             bullet.GetComponent<Bullet>().shooter = Bullet.Shooter.player;
         }
     }
 
+    private void Aim(bool aiming)
+    {
+        if (aiming)
+        {
+            anim.SetBool("aim", true);
+            Vector3 screenPoint = Input.mousePosition;
+            screenPoint.z = -Camera.main.transform.position.z;
+
+            Vector3 aimingPoint = Camera.main.ScreenToWorldPoint(screenPoint);
+            //ESTO ESTÁ MAL - REVISAR
+            aimingPoint.x = aimingPoint.x - rightArm.position.x;
+            aimingPoint.y = aimingPoint.y - rightArm.position.y;
+            float angle = Mathf.Atan2(aimingPoint.y, aimingPoint.x) * Mathf.Rad2Deg;
+            anim.SetFloat("aimAngle",angle);
+
+        }
+        else
+        {
+            anim.SetBool("aim", false);
+
+        }
+
+    }
+
     private void Attack()
     {
+        if (!attacking)
+            StartCoroutine("Attacking");
+        
+    }
+
+    IEnumerator Attacking()
+    {
+        attacking = true;
+        anim.SetTrigger("attack");
+        yield return new WaitForSeconds(damageTime);
+
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, characterController.stats.meleeRange, enemyLayers);
 
         foreach (Collider2D enemy in hitEnemies)
         {
             Vector2 knockbackVector = (enemy.transform.position - transform.position).normalized * characterController.stats.meleeKnockback;
-            
+
 
             enemy.GetComponent<EnemyAIController>().TakeDamage(characterController.stats.meleeDamage, knockbackVector);
         }
+        yield return new WaitForSeconds(damageTime);
+        attacking = false;
     }
 
     public void TakeDamage(int damage, Vector2 knockback)
@@ -123,5 +172,17 @@ public class PlayerCombat : MonoBehaviour
             return;
 
         Gizmos.DrawWireSphere(attackPoint.position, characterController.stats.meleeRange);
+
+        Vector3 screenPoint = Input.mousePosition;
+        screenPoint.z = -Camera.main.transform.position.z;
+
+        Vector3 aimingPoint = Camera.main.ScreenToWorldPoint(screenPoint);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(aimingPoint, 0.2f);
+
+        Gizmos.DrawLine(rightArm.position, shootingPoint.position);
+        Gizmos.DrawLine(rightArm.position, aimingPoint);
+        Gizmos.DrawLine(shootingPoint.position, aimingPoint);
     }
 }

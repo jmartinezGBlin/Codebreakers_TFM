@@ -21,10 +21,21 @@ public class PlayerAnimation : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         animator.SetFloat("movementSpeed", Mathf.Abs(rb.velocity.x));
-        animator.SetBool("jump", !pController.m_Grounded);
-        Debug.Log(!pController.m_Grounded);
+
+        if (!pCombat.attacking)
+        {
+            animator.SetBool("jump", !pController.m_Grounded);
+            animator.SetBool("crouch", pMovement.crouching);
+        }
+        else
+        {
+            animator.SetBool("jump", false);
+            animator.SetBool("crouch", false);
+
+        }
+
     }
 }
