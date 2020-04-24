@@ -48,8 +48,8 @@ public class ChaseState : AIInterface
             {
                
                 if (enemyAI.stats.canMove)
-                {
-                    enemyAI.enemyMovement.Move(enemyAI.stats.moveSpeed);
+                { 
+                    enemyAI.enemyMovement.Move(enemyAI.stats.moveSpeed, enemyAI.stats.maxRunSpeed);
 
                     if (enemyAI.enemyMovement.CheckObstacleForward())
                         enemyAI.enemyMovement.Jump();

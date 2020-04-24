@@ -38,7 +38,7 @@ public class PatrolState : AIInterface
     {
         if (enemyAI.stats.canMove && enemyAI.patrolWaypoints.Length > 0)
         {
-            enemyAI.enemyMovement.Move(enemyAI.stats.patrolSpeed);
+            enemyAI.enemyMovement.Move(enemyAI.stats.patrolSpeed,enemyAI.stats.maxWalkSpeed);
 
 
             float distance = Vector2.Distance(enemyAI.transform.position, enemyAI.enemyMovement.target.transform.position);

@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: StandardEnemy
   m_EditorClassIdentifier: 
   healthPoints: 100
-  moveSpeed: 400
-  patrolSpeed: 300
+  moveSpeed: 300
+  maxRunSpeed: 7
+  patrolSpeed: 80
+  maxWalkSpeed: 2
   jumpHeight: 10
   maxAngle: 35
   lookRange: 10

@@ -8,7 +8,9 @@ public class EnemyStats : ScriptableObject
     //BASIC STATS
     public int healthPoints = 100;
     public float moveSpeed = 400;
+    public float maxRunSpeed = 5f;
     public float patrolSpeed = 200f;
+    public float maxWalkSpeed = 2f;
     public float jumpHeight = 1f;
     public float maxAngle;
     public float lookRange = 40f;

@@ -9,6 +9,7 @@ public class EnemyAIController : MonoBehaviour
     public EnemyStats stats;
     public Transform[] patrolWaypoints;
     public Transform attackPoint;
+    public Transform sightPoint;
     public GameObject bulletPrefab;
     public LayerMask playerLayer;
 
@@ -23,9 +24,11 @@ public class EnemyAIController : MonoBehaviour
     [HideInInspector] public SearchState searchState;
 
     private CircleCollider2D col;
+    private Animator anim;
     private int actualHealth;
     private float shootingCooldown;
     private float meleeCooldown;
+    private bool attacking = false;
 
     private void Awake()
     {
@@ -39,6 +42,7 @@ public class EnemyAIController : MonoBehaviour
         enemyMovement = GetComponent<EnemyMovement>();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CircleCollider2D>();
+        anim = GetComponent<Animator>();
         spawnPoint = transform;
 
         if (patrolWaypoints.Length == 0)
@@ -58,6 +62,15 @@ public class EnemyAIController : MonoBehaviour
         currentState.UpdateState();
     }
 
+    private void LateUpdate()
+    {
+        if (anim != null && rb != null)
+        {
+            anim.SetFloat("moveSpeed", Mathf.Abs(rb.velocity.x));
+            //Debug.Log(Mathf.Abs(rb.velocity.x));
+        }
+    }
+
     private void Die()
     {
         Destroy(gameObject);
@@ -69,7 +82,7 @@ public class EnemyAIController : MonoBehaviour
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         else
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
-
+        anim.SetTrigger("hit");
         actualHealth -= damage;
         rb.AddForce(knockback);
 
@@ -98,7 +111,7 @@ public class EnemyAIController : MonoBehaviour
         if (CheckObstacleInBetween())
             return false;
 
-        Vector2 playerDirection = (Vector2)(player.transform.position - transform.position);
+        Vector2 playerDirection = (Vector2)(player.transform.position - sightPoint.transform.position + Vector3.up * 1.5f);
         Vector2 direction = playerDirection.normalized;
 
         float angle = Vector2.Angle(direction, transform.right);
@@ -113,7 +126,7 @@ public class EnemyAIController : MonoBehaviour
 
     private bool CheckObstacleInBetween()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, (player.position - transform.position).normalized);
+        RaycastHit2D hit = Physics2D.Raycast(sightPoint.transform.position, (player.transform.position - sightPoint.transform.position + Vector3.up * 1.5f).normalized);
 
         if (hit.collider != null)
         {
@@ -127,7 +140,6 @@ public class EnemyAIController : MonoBehaviour
     {
         if (shootingCooldown >= stats.rangeAttackRate)
         {
-            Debug.Log("Enemy Shooting!!!");
             if (stats.shootType == EnemyStats.ShootType.bullet)
             {
                 GameObject bullet = Instantiate(bulletPrefab, attackPoint.position, attackPoint.rotation);
@@ -142,22 +154,32 @@ public class EnemyAIController : MonoBehaviour
 
     public void Attack()
     {
-        if (meleeCooldown >= stats.meleeSpeedAttack)
+        if (meleeCooldown >= stats.meleeSpeedAttack &! attacking)
         {
-            Debug.Log("Enemy Attack!!!");
-            meleeCooldown = 0f;
-
-            Collider2D hitPlayer = Physics2D.OverlapCircle(attackPoint.position, stats.meleeRange, playerLayer);
-            if (hitPlayer == null)
-                return;
-
-            Vector2 knockbackVector = (hitPlayer.transform.position - transform.position).normalized * stats.meleeKnockback;
-            
-            hitPlayer.GetComponent<PlayerCombat>().TakeDamage(stats.meleeDamage, knockbackVector);
-            meleeCooldown = 0f;
+            StartCoroutine("Attacking");
         }
         else
             meleeCooldown += Time.deltaTime;
+    }
+
+    IEnumerator Attacking()
+    {
+        attacking = true;
+        anim.SetTrigger("attack");
+        yield return new WaitForSeconds(0.5f);
+
+        Collider2D hitPlayer = Physics2D.OverlapCircle(attackPoint.position, stats.meleeRange, playerLayer);
+
+        if (hitPlayer != null)
+        {
+            Vector2 knockbackVector = (hitPlayer.transform.position - transform.position).normalized * stats.meleeKnockback;
+
+            hitPlayer.GetComponent<PlayerCombat>().TakeDamage(stats.meleeDamage, knockbackVector);
+        }
+
+        yield return new WaitForSeconds(0.5f);
+        attacking = false;
+        meleeCooldown = 0f;
     }
 
     /*private bool PlayerMinDistance()
@@ -179,24 +201,24 @@ public class EnemyAIController : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, stats.lookRange);
+        Gizmos.DrawWireSphere(sightPoint.transform.position, stats.lookRange);
 
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(transform.position, stats.jumpRange);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, stats.rangedRange);
+        Gizmos.DrawWireSphere(attackPoint.transform.position, stats.rangedRange);
         Gizmos.DrawWireSphere(attackPoint.position, stats.meleeRange);
 
-        Vector3 fovLine1 = Quaternion.AngleAxis(stats.maxAngle, transform.forward) * transform.right * stats.lookRange;
-        Vector3 fovLine2 = Quaternion.AngleAxis(-stats.maxAngle, transform.forward) * transform.right * stats.lookRange;
+        Vector3 fovLine1 = Quaternion.AngleAxis(stats.maxAngle, sightPoint.transform.forward) * sightPoint.transform.right * stats.lookRange;
+        Vector3 fovLine2 = Quaternion.AngleAxis(-stats.maxAngle, sightPoint.transform.forward) * sightPoint.transform.right * stats.lookRange;
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawRay(transform.position, fovLine1);
-        Gizmos.DrawRay(transform.position, fovLine2);
+        Gizmos.DrawRay(sightPoint.transform.position, fovLine1);
+        Gizmos.DrawRay(sightPoint.transform.position, fovLine2);
 
         Gizmos.color = Color.black;
-        Gizmos.DrawRay(transform.position, transform.right * stats.lookRange);
+        Gizmos.DrawRay(sightPoint.transform.position, sightPoint.transform.right * stats.lookRange);
 
         if (col != null)
         {
@@ -208,7 +230,7 @@ public class EnemyAIController : MonoBehaviour
             Gizmos.color = Color.green;
         else
             Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, (player.position - transform.position).normalized * stats.lookRange);
+        Gizmos.DrawRay(sightPoint.transform.position, (player.transform.position - sightPoint.transform.position + Vector3.up * 1.5f).normalized * stats.lookRange);
 
     }
 }

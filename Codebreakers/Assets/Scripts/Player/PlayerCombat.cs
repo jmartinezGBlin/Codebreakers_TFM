@@ -126,7 +126,7 @@ public class PlayerCombat : MonoBehaviour
 
             enemy.GetComponent<EnemyAIController>().TakeDamage(characterController.stats.meleeDamage, knockbackVector);
         }
-        yield return new WaitForSeconds(damageTime);
+        yield return new WaitForSeconds(attackAnimTime);
         attacking = false;
     }
 
@@ -148,6 +148,7 @@ public class PlayerCombat : MonoBehaviour
 
     IEnumerator InvulnerableFrames()
     {
+        anim.SetTrigger("hit");
         Physics2D.IgnoreLayerCollision(9, 10, true);
         Physics2D.IgnoreLayerCollision(9, 11, true);
        // rendColor.a = 0.5f;

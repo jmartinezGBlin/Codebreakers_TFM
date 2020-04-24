@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
-    public Transform GFX;
     public LayerMask obstacleLayer;
 
     [HideInInspector] public Transform target;
@@ -15,9 +14,10 @@ public class EnemyMovement : MonoBehaviour
     private Path path;
     private int currentWaypoint = 0;
 
-    EnemyAIController enemyAI;
-    Seeker seeker;
-    Rigidbody2D rb;
+    private EnemyAIController enemyAI;
+    private Seeker seeker;
+    private Rigidbody2D rb;
+    private Animator anim;
 
 
     private void Start()
@@ -25,6 +25,7 @@ public class EnemyMovement : MonoBehaviour
         enemyAI = GetComponent<EnemyAIController>();
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
 
         if (enemyAI.stats.canFly)
             rb.gravityScale = 0f;
@@ -58,7 +59,7 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
-    public void Move(float speed)
+    public void Move(float speed, float maxSpeed)
     {
         if (path == null)
             return;
@@ -72,6 +73,12 @@ public class EnemyMovement : MonoBehaviour
         if (distance < enemyAI.stats.nextWaypointDistance)
             currentWaypoint++;
 
+        float targetDistance = Vector2.Distance(rb.position, target.position);
+        if (targetDistance < enemyAI.stats.nextWaypointDistance)
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        else
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
         //... Como consecuencia en ocasiones el currentWaypoint es de un valor superior al tamaño del vectorPath
         if (currentWaypoint < path.vectorPath.Count)
         {
@@ -81,10 +88,22 @@ public class EnemyMovement : MonoBehaviour
 
             //Si el enemigo no vuela; aplico la fuerza únicamente en el eje X
             if (!enemyAI.stats.canFly)
+            {
                 force.y *= 0f;
+                if (rb.velocity.magnitude > maxSpeed && rb.velocity.y == 0)
+                    rb.velocity = rb.velocity.normalized * maxSpeed;
+                else
+                    rb.AddForce(force);
 
-            rb.AddForce(force);
-
+            }
+            else
+            {
+                if (rb.velocity.magnitude > maxSpeed)
+                    rb.velocity = rb.velocity.normalized * maxSpeed;
+                else
+                    rb.AddForce(force);
+            }
+            
             CheckDirection(force);
             GravityModifier();
         }
@@ -118,6 +137,7 @@ public class EnemyMovement : MonoBehaviour
         //Nos aseguramos de que solo añade el impulso cuando no tiene velocidad en y
         if (rb.velocity.y == 0)
             rb.AddForce(Vector2.up * enemyAI.stats.jumpHeight, ForceMode2D.Impulse);
+
     }
 
     public bool CheckObstacleForward()
