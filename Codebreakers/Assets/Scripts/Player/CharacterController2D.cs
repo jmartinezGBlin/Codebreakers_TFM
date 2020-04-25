@@ -33,9 +33,12 @@ public class CharacterController2D : MonoBehaviour
 	public BoolEvent OnCrouchEvent;
 	private bool m_wasCrouching = false;
 
+    private PlayerCombat pCombat;
+
 	private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
+        pCombat = GetComponent<PlayerCombat>();
 
 		if (OnLandEvent == null)
 			OnLandEvent = new UnityEvent();
@@ -124,13 +127,13 @@ public class CharacterController2D : MonoBehaviour
 			m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
 
 			// If the input is moving the player right and the player is facing left...
-			if (move > 0 && !m_FacingRight)
+			if (((move > 0 && !pCombat.aiming) || (pCombat.aiming && pCombat.aimingRight)) && !m_FacingRight)
 			{
 				// ... flip the player.
 				Flip();
 			}
 			// Otherwise if the input is moving the player left and the player is facing right...
-			else if (move < 0 && m_FacingRight)
+			else if (((move < 0 && !pCombat.aiming) || (pCombat.aiming && !pCombat.aimingRight)) && m_FacingRight)
 			{
 				// ... flip the player.
 				Flip();

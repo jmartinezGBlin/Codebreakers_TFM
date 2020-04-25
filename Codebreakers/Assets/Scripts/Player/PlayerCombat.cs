@@ -17,7 +17,11 @@ public class PlayerCombat : MonoBehaviour
     public Transform leftArm;
     public Transform rightArm;
 
+    public Laser laserAim;
+
     [HideInInspector] public bool attacking;
+    [HideInInspector] public bool aiming;
+    [HideInInspector] public bool aimingRight;
     [HideInInspector] private bool invulnerable = false;
 
 
@@ -51,7 +55,20 @@ public class PlayerCombat : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Aim(Input.GetButton("Fire2"));
+        if (Input.GetButton("Fire2"))
+        {
+            aiming = true;
+            laserAim.EnableLaser();
+            Aim();
+        }
+        else
+        {
+            aiming = false;
+            laserAim.DisableLaser();
+            anim.SetFloat("aimAngle", 0f);
+        }
+            
+
 
         if (Input.GetButtonDown("Fire1") && shootCooldown >= characterController.stats.rangeAttackRate)
         {
@@ -80,27 +97,19 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    private void Aim(bool aiming)
+    private void Aim()
     {
-        if (aiming)
-        {
-            anim.SetBool("aim", true);
-            Vector3 screenPoint = Input.mousePosition;
-            screenPoint.z = -Camera.main.transform.position.z;
+        Vector3 screenPoint = Input.mousePosition;
+        screenPoint.z = -Camera.main.transform.position.z;
 
-            Vector3 aimingPoint = Camera.main.ScreenToWorldPoint(screenPoint);
-            //ESTO ESTÁ MAL - REVISAR
-            aimingPoint.x = aimingPoint.x - rightArm.position.x;
-            aimingPoint.y = aimingPoint.y - rightArm.position.y;
-            float angle = Mathf.Atan2(aimingPoint.y, aimingPoint.x) * Mathf.Rad2Deg;
-            anim.SetFloat("aimAngle",angle);
+        Vector3 aimingPoint = Camera.main.ScreenToWorldPoint(screenPoint);
 
-        }
+        if (aimingPoint.x - transform.position.x > 0)
+            aimingRight = true;
         else
-        {
-            anim.SetBool("aim", false);
-
-        }
+            aimingRight = false;
+        
+        anim.SetFloat("aimAngle", aimingPoint.y - attackPoint.position.y);
 
     }
 
