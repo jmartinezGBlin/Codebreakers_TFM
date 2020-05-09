@@ -74,7 +74,8 @@ public class EnemyMovement : MonoBehaviour
             currentWaypoint++;
 
         float targetDistance = Vector2.Distance(rb.position, target.position);
-        if (targetDistance < enemyAI.stats.nextWaypointDistance)
+
+        if (targetDistance < enemyAI.stats.nextWaypointDistance || enemyAI.attacking)
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
         else
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;

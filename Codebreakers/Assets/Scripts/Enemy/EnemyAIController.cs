@@ -28,7 +28,8 @@ public class EnemyAIController : MonoBehaviour
     private int actualHealth;
     private float shootingCooldown;
     private float meleeCooldown;
-    private bool attacking = false;
+    [HideInInspector] public bool attacking = false;
+    private bool dead = false;
 
     private void Awake()
     {
@@ -59,11 +60,17 @@ public class EnemyAIController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (dead)
+            return;
+
         currentState.UpdateState();
     }
 
     private void LateUpdate()
     {
+        if (dead)
+            return;
+
         if (anim != null && rb != null)
         {
             anim.SetFloat("moveSpeed", Mathf.Abs(rb.velocity.x));
@@ -73,6 +80,16 @@ public class EnemyAIController : MonoBehaviour
 
     private void Die()
     {
+        StopAllCoroutines();
+        StartCoroutine(DyingTime());
+    }
+
+    IEnumerator DyingTime()
+    {
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        dead = true;
+        anim.SetTrigger("die");
+        yield return new WaitForSeconds(2f);
         Destroy(gameObject);
     }
 
@@ -98,14 +115,8 @@ public class EnemyAIController : MonoBehaviour
     {
         if (enemyMovement == null)
             return false;
-
-       /* if (enemyMovement.facingRight)
-                lookDirection = transform.right;
-        else
-                lookDirection = -transform.right;*/
-
-        /*  if (PlayerMinDistance())
-            return true;*/
+        if (player.GetComponent<CharacterController2D>().dead)
+            return false;
 
         //Comprobamos si hay un muro o un obstáculo entre el enemigo y el jugador.
         if (CheckObstacleInBetween())

@@ -19,6 +19,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (controller.dead)
+            return;
 
         horizontalMove = Input.GetAxisRaw("Horizontal") * controller.stats.moveSpeed;
 
@@ -30,6 +32,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (controller.dead)
+            return;
+
         //Character movement thorugh CharacterController2D
         if (!playerCombat.attacking)
             controller.Move(horizontalMove * Time.fixedDeltaTime, crouching, jump);

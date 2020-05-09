@@ -32,8 +32,9 @@ public class PlayerCombat : MonoBehaviour
     private Rigidbody2D rb;
     private SceneController sceneController;
     //private Renderer rend;
-    //private Color rendColor;
+    private Color rendColor;
     private Animator anim;
+    private Renderer[] rends;
     
 
     private void Start()
@@ -42,9 +43,9 @@ public class PlayerCombat : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sceneController = FindObjectOfType<SceneController>();
         anim = GetComponent<Animator>();
-       // rend = GetComponent<Renderer>();
-
-        //rendColor = rend.material.color;
+        rends = GetComponentsInChildren<Renderer>();
+        // rend = GetComponent<Renderer>();
+        
         attackCooldown = characterController.stats.meleeSpeedAttack;
         shootCooldown = characterController.stats.rangeAttackRate;
         actualHealth = characterController.stats.healthPoints;
@@ -55,6 +56,9 @@ public class PlayerCombat : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (characterController.dead)
+            return;
+
         if (Input.GetButton("Fire2"))
         {
             aiming = true;
@@ -117,7 +121,6 @@ public class PlayerCombat : MonoBehaviour
     {
         if (!attacking)
             StartCoroutine("Attacking");
-        
     }
 
     IEnumerator Attacking()
@@ -141,7 +144,7 @@ public class PlayerCombat : MonoBehaviour
 
     public void TakeDamage(int damage, Vector2 knockback)
     {
-        if (invulnerable)
+        if (invulnerable || characterController.dead)
             return;
 
         actualHealth -= damage;
@@ -160,19 +163,36 @@ public class PlayerCombat : MonoBehaviour
         anim.SetTrigger("hit");
         Physics2D.IgnoreLayerCollision(9, 10, true);
         Physics2D.IgnoreLayerCollision(9, 11, true);
-       // rendColor.a = 0.5f;
-       // rend.material.color = rendColor;
+        foreach (Renderer rend in rends)
+        {
+            rendColor = rend.material.color;
+            rendColor.a = 0.5f;
+            rend.material.color = rendColor;
+        }
         invulnerable = true;
         yield return new WaitForSeconds(hitTime);
         Physics2D.IgnoreLayerCollision(9, 10, false);
         Physics2D.IgnoreLayerCollision(9, 11, false);
-      // rendColor.a = 1f;
-//rend.material.color = rendColor;
+
+        foreach (Renderer rend in rends)
+        {
+            rendColor = rend.material.color;
+            rendColor.a = 1f;
+            rend.material.color = rendColor;
+        }
         invulnerable = false;
     }
 
     private void Die()
     {
+        StopAllCoroutines();
+        StartCoroutine(DyingTime());
+    }
+
+    IEnumerator DyingTime()
+    {
+        characterController.dead = true;
+        yield return new WaitForSeconds(3f);
         sceneController.GameOver();
     }
 
@@ -187,12 +207,6 @@ public class PlayerCombat : MonoBehaviour
         screenPoint.z = -Camera.main.transform.position.z;
 
         Vector3 aimingPoint = Camera.main.ScreenToWorldPoint(screenPoint);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(aimingPoint, 0.2f);
-
-        Gizmos.DrawLine(rightArm.position, shootingPoint.position);
-        Gizmos.DrawLine(rightArm.position, aimingPoint);
-        Gizmos.DrawLine(shootingPoint.position, aimingPoint);
+        
     }
 }

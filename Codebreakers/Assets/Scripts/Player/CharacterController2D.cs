@@ -34,6 +34,7 @@ public class CharacterController2D : MonoBehaviour
 	private bool m_wasCrouching = false;
 
     private PlayerCombat pCombat;
+    [HideInInspector] public bool dead = false;
 
 	private void Awake()
 	{
@@ -54,6 +55,11 @@ public class CharacterController2D : MonoBehaviour
 
     private void FixedUpdate()
 	{
+        if (dead)
+        {
+            m_Rigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
+            return;
+        }
 		bool wasGrounded = m_Grounded;
 		m_Grounded = false;
 
@@ -71,7 +77,14 @@ public class CharacterController2D : MonoBehaviour
 		}
 
         if (m_Grounded)
+        {
             m_Rigidbody2D.gravityScale = 1f;
+            if (pCombat.attacking)
+                m_Rigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
+            else
+                m_Rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+        }
         else
             m_Rigidbody2D.gravityScale = 3f;
 
