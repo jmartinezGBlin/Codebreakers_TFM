@@ -35,7 +35,6 @@ public class UIController : MonoBehaviour
     }
     
 
-
     private void CheckMouse()
     {
         if (!EventSystem.current.IsPointerOverGameObject())

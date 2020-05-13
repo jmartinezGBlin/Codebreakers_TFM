@@ -95,6 +95,9 @@ public class EnemyAIController : MonoBehaviour
 
     public void TakeDamage(int damage, Vector2 knockback)
     {
+        if (dead)
+            return;
+
         if (stats.canMove)
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         else
