@@ -50,12 +50,8 @@ public class ChaseState : AIInterface
                 if (enemyAI.stats.canMove)
                 { 
                     enemyAI.enemyMovement.Move(enemyAI.stats.moveSpeed, enemyAI.stats.maxRunSpeed);
-
-                    if (enemyAI.enemyMovement.CheckObstacleForward())
-                        enemyAI.enemyMovement.Jump();
                 }
 
-                
                 if (!enemyAI.FindPlayer())
                 {
                     if (timePlayerLost >= enemyAI.stats.timeChaseLost)
@@ -66,6 +62,9 @@ public class ChaseState : AIInterface
                 else
                     timePlayerLost = 0f;
             }
+
+            if (enemyAI.CheckObstacleForward() && enemyAI.stats.canJump)
+                enemyAI.enemyMovement.Jump();
         }
         
     }

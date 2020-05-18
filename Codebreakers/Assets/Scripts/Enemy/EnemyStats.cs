@@ -21,6 +21,7 @@ public class EnemyStats : ScriptableObject
 
     //
     public bool canMove = true;
+    public bool canJump = true;
     public bool canFly = false;
     public bool meleeAttack = true;
     public bool rangedAttack = false;

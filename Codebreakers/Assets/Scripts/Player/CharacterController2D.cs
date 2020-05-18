@@ -35,8 +35,9 @@ public class CharacterController2D : MonoBehaviour
 
     private PlayerCombat pCombat;
     [HideInInspector] public bool dead = false;
+    [HideInInspector] public bool stopInput = false;
 
-	private void Awake()
+    private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
         pCombat = GetComponent<PlayerCombat>();

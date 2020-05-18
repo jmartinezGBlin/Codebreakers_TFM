@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad982109285f0f646be32cfad5355ca9, type: 3}
   m_Name: SoldierStats
   m_EditorClassIdentifier: 
-  healthPoints: 100000
+  healthPoints: 100
   moveSpeed: 40
   jumpForce: 800
   meleeRange: 0.5

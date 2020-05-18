@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (controller.dead)
+        if (controller.dead || controller.stopInput)
             return;
 
         horizontalMove = Input.GetAxisRaw("Horizontal") * controller.stats.moveSpeed;
@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (controller.dead)
+        if (controller.dead || controller.stopInput)
             return;
 
         //Character movement thorugh CharacterController2D

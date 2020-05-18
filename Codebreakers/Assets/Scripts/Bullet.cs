@@ -47,17 +47,28 @@ public class Bullet : MonoBehaviour
     private void Update()
     {
         if (bulletLife >= bulletLifeSpawn)
-        {
             Destroy(gameObject);
-        }
         else
-        {
             bulletLife += Time.deltaTime;
-        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Obstacle"))
+            Destroy(gameObject);
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Obstacle"))
+            Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.CompareTag("Obstacle"))
+            Destroy(gameObject);
+
         if (shooter == Shooter.player)
         {
             EnemyAIController enemy = collision.GetComponent<EnemyAIController>();
@@ -65,10 +76,11 @@ public class Bullet : MonoBehaviour
             {
                 Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * shootKnockback;
                 enemy.TakeDamage(shootDamage, knockbackDirection);
+                Destroy(gameObject);
             }
 
-            if (!collision.CompareTag("Player"))
-                Destroy(gameObject);
+        /*    if (!collision.CompareTag("Player"))
+                Destroy(gameObject);*/
         }
         else
         {
@@ -77,10 +89,11 @@ public class Bullet : MonoBehaviour
             {
                 Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * shootKnockback;
                 enemy.TakeDamage(shootDamage, knockbackDirection);
+                Destroy(gameObject);
             }
 
-            if (!collision.CompareTag("Enemy"))
-                Destroy(gameObject);
+       /*     if (!collision.CompareTag("Enemy"))
+                Destroy(gameObject);*/
         }
     }
 

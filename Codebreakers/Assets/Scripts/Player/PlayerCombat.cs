@@ -48,15 +48,19 @@ public class PlayerCombat : MonoBehaviour
         
         attackCooldown = characterController.stats.meleeSpeedAttack;
         shootCooldown = characterController.stats.rangeAttackRate;
-        actualHealth = characterController.stats.healthPoints;
+        if (GameController.instance.firstLevel)
+        {
+            GameController.instance.actualHealth = characterController.stats.healthPoints;
+        }
+        actualHealth = GameController.instance.actualHealth;
 
-        healthBar.fillAmount = 1f;
+        healthBar.fillAmount = (float)actualHealth/(float)characterController.stats.healthPoints;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (characterController.dead)
+        if (characterController.dead || characterController.stopInput)
             return;
 
         if (Input.GetButton("Fire2"))
@@ -208,5 +212,13 @@ public class PlayerCombat : MonoBehaviour
 
         Vector3 aimingPoint = Camera.main.ScreenToWorldPoint(screenPoint);
         
+    }
+
+
+    //Save data to game controller
+    public void SavePlayer()
+    {
+        GameController.instance.firstLevel = false;
+        GameController.instance.actualHealth = actualHealth;
     }
 }

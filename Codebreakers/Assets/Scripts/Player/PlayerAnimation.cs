@@ -23,6 +23,9 @@ public class PlayerAnimation : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        if (pController.stopInput)
+            return;
+
         if (pController.dead)
             animator.SetTrigger("die");
         else

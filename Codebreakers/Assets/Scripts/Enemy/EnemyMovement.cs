@@ -115,7 +115,7 @@ public class EnemyMovement : MonoBehaviour
         if (enemyAI.stats.canFly)
             return;
 
-        if (rb.velocity.y >= float.Epsilon)
+        if (Mathf.Abs(rb.velocity.y) > 0.1f)
             rb.gravityScale = 2f;
         else
             rb.gravityScale = 1f;
@@ -136,24 +136,9 @@ public class EnemyMovement : MonoBehaviour
     public void Jump()
     {
         //Nos aseguramos de que solo añade el impulso cuando no tiene velocidad en y
-        if (rb.velocity.y == 0)
+        if (Mathf.Abs(rb.velocity.y) <= 0.1f)
             rb.AddForce(Vector2.up * enemyAI.stats.jumpHeight, ForceMode2D.Impulse);
 
-    }
-
-    public bool CheckObstacleForward()
-    {
-        bool jump = false;
-        
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, enemyAI.stats.jumpRange);
-
-        if (hit.collider != null)
-        {
-            if (hit.collider.gameObject.CompareTag("Obstacle"))
-                jump = true;
-        }
-
-        return jump;
     }
     
     public void Flip()

@@ -55,6 +55,11 @@ public class EnemyAIController : MonoBehaviour
         actualHealth = stats.healthPoints;
         shootingCooldown = stats.rangeAttackRate;
         meleeCooldown = stats.meleeSpeedAttack;
+
+
+        Physics2D.IgnoreLayerCollision(10, 10, false);
+        Physics2D.IgnoreLayerCollision(10, 9, false);
+        Physics2D.IgnoreLayerCollision(10, 11, false);
     }
     
 
@@ -81,14 +86,19 @@ public class EnemyAIController : MonoBehaviour
     private void Die()
     {
         StopAllCoroutines();
+        Physics2D.IgnoreLayerCollision(10, 10, true);
+        Physics2D.IgnoreLayerCollision(10, 9, true);
+        Physics2D.IgnoreLayerCollision(10, 11, true);
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        rb.velocity = Vector3.zero;
         StartCoroutine(DyingTime());
     }
 
     IEnumerator DyingTime()
     {
-        rb.constraints = RigidbodyConstraints2D.FreezeAll;
         dead = true;
         anim.SetTrigger("die");
+
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);
     }
@@ -140,11 +150,11 @@ public class EnemyAIController : MonoBehaviour
 
     private bool CheckObstacleInBetween()
     {
-        RaycastHit2D hit = Physics2D.Raycast(sightPoint.transform.position, (player.transform.position - sightPoint.transform.position + Vector3.up * 1.5f).normalized);
+        RaycastHit2D hit = Physics2D.Raycast(sightPoint.transform.position, (player.transform.position - sightPoint.transform.position + Vector3.up * 1.5f).normalized * stats.jumpRange);
 
         if (hit.collider != null)
         {
-            if (hit.collider.gameObject.CompareTag("Obstacle"))
+            if (hit.collider.CompareTag("Obstacle"))
                 return true;
         }
         return false;
@@ -196,20 +206,21 @@ public class EnemyAIController : MonoBehaviour
         meleeCooldown = 0f;
     }
 
-    /*private bool PlayerMinDistance()
+    public bool CheckObstacleForward()
     {
-        Collider2D[] colliders = new Collider2D[10];
-            
-        Physics2D.OverlapCircleNonAlloc(transform.position, col.radius * 0.01f, colliders);
+        bool jump = false;
 
-        foreach (Collider2D coll in colliders)
+        RaycastHit2D hit = Physics2D.Raycast(sightPoint.transform.position, transform.right, stats.jumpRange);
+
+        if (hit.collider != null)
         {
-            if (coll.gameObject.CompareTag("Player"))
-                return true;
+            if (hit.collider.CompareTag("Obstacle"))
+                jump = true;
         }
 
-        return false;
-    }*/
+        return jump;
+    }
+
 
 
     private void OnDrawGizmos()
@@ -217,8 +228,8 @@ public class EnemyAIController : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(sightPoint.transform.position, stats.lookRange);
 
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(transform.position, stats.jumpRange);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawRay(sightPoint.transform.position, transform.right * stats.jumpRange);
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(attackPoint.transform.position, stats.rangedRange);
@@ -245,6 +256,6 @@ public class EnemyAIController : MonoBehaviour
         else
             Gizmos.color = Color.red;
         Gizmos.DrawRay(sightPoint.transform.position, (player.transform.position - sightPoint.transform.position + Vector3.up * 1.5f).normalized * stats.lookRange);
-
+        
     }
 }
