@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     public LayerMask obstacleLayer;
+    public bool reverseSprite; //CORREGIR LOS SPRITES; Esto es solo para salir del paso
 
     [HideInInspector] public Transform target;
     [HideInInspector] public bool facingRight = true;
@@ -61,6 +62,7 @@ public class EnemyMovement : MonoBehaviour
 
     public void Move(float speed, float maxSpeed)
     {
+        Debug.Log(facingRight);
         if (path == null)
             return;
 
@@ -123,13 +125,27 @@ public class EnemyMovement : MonoBehaviour
 
     private void CheckDirection(Vector2 force)
     {
-        if (force.x >= 0.1f && facingRight)
+        if (!reverseSprite)
         {
-            Flip();
+            if (force.x >= 0.1f && facingRight)
+            {
+                Flip();
+            }
+            else if (force.x <= -0.1f & !facingRight)
+            {
+                Flip();
+            }
         }
-        else if (force.x <= -0.1f &! facingRight)
+        else
         {
-            Flip();
+            if (force.x >= 0.1f && !facingRight)
+            {
+                Flip();
+            }
+            else if (force.x <= -0.1f & facingRight)
+            {
+                Flip();
+            }
         }
     }
 

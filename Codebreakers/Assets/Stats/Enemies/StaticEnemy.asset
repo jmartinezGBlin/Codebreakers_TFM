@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthPoints: 100
   moveSpeed: 400
+  maxRunSpeed: 5
   patrolSpeed: 300
+  maxWalkSpeed: 2
   jumpHeight: 10
   maxAngle: 35
   lookRange: 10
@@ -22,6 +24,7 @@ MonoBehaviour:
   nextWaypointDistance: 2
   timeChaseLost: 2
   canMove: 0
+  canJump: 1
   canFly: 0
   meleeAttack: 0
   rangedAttack: 1
@@ -31,7 +34,7 @@ MonoBehaviour:
   meleeKnockback: 2000
   shootType: 0
   bulletSpeed: 20
-  rangedRange: 10
+  rangedRange: 8
   rangeAttackRate: 1
-  rangeDamage: 20
+  rangeDamage: 10
   rangeKnockback: 0.1

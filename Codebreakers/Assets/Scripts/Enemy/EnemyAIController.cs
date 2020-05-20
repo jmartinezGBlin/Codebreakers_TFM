@@ -23,7 +23,7 @@ public class EnemyAIController : MonoBehaviour
     [HideInInspector] public PatrolState patrolState;
     [HideInInspector] public SearchState searchState;
 
-    private CircleCollider2D col;
+    private CapsuleCollider2D col;
     private Animator anim;
     private int actualHealth;
     private float shootingCooldown;
@@ -42,7 +42,7 @@ public class EnemyAIController : MonoBehaviour
     {
         enemyMovement = GetComponent<EnemyMovement>();
         rb = GetComponent<Rigidbody2D>();
-        col = GetComponent<CircleCollider2D>();
+        col = GetComponent<CapsuleCollider2D>();
         anim = GetComponent<Animator>();
         spawnPoint = transform;
 
@@ -86,11 +86,10 @@ public class EnemyAIController : MonoBehaviour
     private void Die()
     {
         StopAllCoroutines();
-        Physics2D.IgnoreLayerCollision(10, 10, true);
-        Physics2D.IgnoreLayerCollision(10, 9, true);
-        Physics2D.IgnoreLayerCollision(10, 11, true);
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
         rb.velocity = Vector3.zero;
+        rb.simulated = false;
+        col.enabled = false;
         StartCoroutine(DyingTime());
     }
 
@@ -112,15 +111,19 @@ public class EnemyAIController : MonoBehaviour
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         else
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
-        anim.SetTrigger("hit");
+
         actualHealth -= damage;
-        rb.AddForce(knockback);
-
-        currentState = chaseState;
-        enemyMovement.target = player;
-
         if (actualHealth <= 0)
             Die();
+        else
+        {
+            anim.SetTrigger("hit");
+            rb.AddForce(knockback);
+
+            currentState = chaseState;
+            enemyMovement.target = player;
+        }
+
     }
     
 
@@ -190,7 +193,11 @@ public class EnemyAIController : MonoBehaviour
     {
         attacking = true;
         anim.SetTrigger("attack");
-        yield return new WaitForSeconds(0.5f);
+
+        if (stats.rangedAttack)
+            yield return new WaitForSeconds(0.5f);
+        else
+            yield return new WaitForSeconds(0.17f);
 
         Collider2D hitPlayer = Physics2D.OverlapCircle(attackPoint.position, stats.meleeRange, playerLayer);
 
@@ -201,7 +208,11 @@ public class EnemyAIController : MonoBehaviour
             hitPlayer.GetComponent<PlayerCombat>().TakeDamage(stats.meleeDamage, knockbackVector);
         }
 
-        yield return new WaitForSeconds(0.5f);
+        if (stats.rangedAttack)
+            yield return new WaitForSeconds(0.5f);
+        else
+            yield return new WaitForSeconds(0.25f);
+
         attacking = false;
         meleeCooldown = 0f;
     }
@@ -245,16 +256,12 @@ public class EnemyAIController : MonoBehaviour
         Gizmos.color = Color.black;
         Gizmos.DrawRay(sightPoint.transform.position, sightPoint.transform.right * stats.lookRange);
 
-        if (col != null)
-        {
-            Gizmos.color = Color.black;
-            Gizmos.DrawWireSphere(transform.position, col.radius * 0.1f);
-        }
-
+        
         if (FindPlayer())
             Gizmos.color = Color.green;
         else
             Gizmos.color = Color.red;
+
         Gizmos.DrawRay(sightPoint.transform.position, (player.transform.position - sightPoint.transform.position + Vector3.up * 1.5f).normalized * stats.lookRange);
         
     }
