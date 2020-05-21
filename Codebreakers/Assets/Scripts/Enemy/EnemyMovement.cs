@@ -62,7 +62,6 @@ public class EnemyMovement : MonoBehaviour
 
     public void Move(float speed, float maxSpeed)
     {
-        Debug.Log(facingRight);
         if (path == null)
             return;
 

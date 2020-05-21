@@ -174,6 +174,18 @@ public class EnemyAIController : MonoBehaviour
 
                 shootingCooldown = 0f;
             }
+            else if (stats.shootType == EnemyStats.ShootType.launcher)
+            {
+                Debug.Log("Shooting");
+                GameObject instantiatedProjectile = Instantiate(bulletPrefab, attackPoint.position, attackPoint.rotation);
+                instantiatedProjectile.GetComponent<Rocket>().shooter = Rocket.Shooter.enemy;
+
+                instantiatedProjectile.GetComponent<Rigidbody2D>().velocity = instantiatedProjectile.transform.right * stats.bulletSpeed / 2;
+                // Ignore collisions between the missile and the character controller
+                Physics2D.IgnoreCollision(instantiatedProjectile.GetComponent<BoxCollider2D>(), transform.GetComponent<CapsuleCollider2D>());
+
+                shootingCooldown = 0f;
+            }
         }
         else
             shootingCooldown += Time.deltaTime;
@@ -232,6 +244,13 @@ public class EnemyAIController : MonoBehaviour
         return jump;
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<PlayerCombat>().TakeDamage(10, new Vector2(stats.meleeKnockback,0f));
+        }
+    }
 
 
     private void OnDrawGizmos()

@@ -37,7 +37,8 @@ public class EnemyStats : ScriptableObject
     public enum ShootType
     {
         bullet,
-        raycast
+        raycast,
+        launcher
     }
 
     public ShootType shootType = ShootType.bullet;
