@@ -132,7 +132,10 @@ public class Rocket : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Projectile"))
+        {
+            Destroy(collision.gameObject);
             Destroy(gameObject);
+        }
 
         if (collision.gameObject.CompareTag("Obstacle"))
             Destroy(gameObject);
@@ -141,7 +144,10 @@ public class Rocket : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Projectile"))
+        {
+            Destroy(collision.gameObject);
             Destroy(gameObject);
+        }
 
         if (collision.gameObject.CompareTag("Obstacle"))
             Destroy(gameObject);
@@ -150,7 +156,10 @@ public class Rocket : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Projectile"))
+        {
+            Destroy(collision.gameObject);
             Destroy(gameObject);
+        }
 
         if (collision.gameObject.CompareTag("Obstacle"))
             Destroy(gameObject);

@@ -176,7 +176,6 @@ public class EnemyAIController : MonoBehaviour
             }
             else if (stats.shootType == EnemyStats.ShootType.launcher)
             {
-                Debug.Log("Shooting");
                 GameObject instantiatedProjectile = Instantiate(bulletPrefab, attackPoint.position, attackPoint.rotation);
                 instantiatedProjectile.GetComponent<Rocket>().shooter = Rocket.Shooter.enemy;
 
