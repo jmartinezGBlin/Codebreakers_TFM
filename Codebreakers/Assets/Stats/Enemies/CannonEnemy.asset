@@ -19,7 +19,7 @@ MonoBehaviour:
   maxWalkSpeed: 0
   jumpHeight: 0
   maxAngle: 75
-  lookRange: 12
+  lookRange: 16
   jumpRange: 0
   nextWaypointDistance: 0
   timeChaseLost: 2
@@ -34,7 +34,7 @@ MonoBehaviour:
   meleeKnockback: 0
   shootType: 2
   bulletSpeed: 4
-  rangedRange: 10
+  rangedRange: 15
   rangeAttackRate: 4
   rangeDamage: 30
   rangeKnockback: 1000

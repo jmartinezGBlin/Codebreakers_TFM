@@ -11,7 +11,8 @@ public class LevelExit : MonoBehaviour
     private enum Connection
     {
         previous,
-        next
+        next,
+        final
     };
     [SerializeField]
 
@@ -42,7 +43,13 @@ public class LevelExit : MonoBehaviour
             else if (jumpTo == Connection.next)
                 GameController.instance.levelScene++;
 
-            string sceneName = "Level " + GameController.instance.gameLevel + "-" + GameController.instance.levelScene;
+
+            string sceneName;
+            if (jumpTo == Connection.final)
+                sceneName = "GameOver";
+            else
+                sceneName = "Level " + GameController.instance.gameLevel + "-" + GameController.instance.levelScene;
+
             StartCoroutine(LoadScene(sceneName));
         }
     }

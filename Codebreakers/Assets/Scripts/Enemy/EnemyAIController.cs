@@ -55,11 +55,6 @@ public class EnemyAIController : MonoBehaviour
         actualHealth = stats.healthPoints;
         shootingCooldown = stats.rangeAttackRate;
         meleeCooldown = stats.meleeSpeedAttack;
-
-
-        Physics2D.IgnoreLayerCollision(10, 10, false);
-        Physics2D.IgnoreLayerCollision(10, 9, false);
-        Physics2D.IgnoreLayerCollision(10, 11, false);
     }
     
 
@@ -170,16 +165,27 @@ public class EnemyAIController : MonoBehaviour
             if (stats.shootType == EnemyStats.ShootType.bullet)
             {
                 GameObject bullet = Instantiate(bulletPrefab, attackPoint.position, attackPoint.rotation);
-                bullet.GetComponent<Bullet>().shooter = Bullet.Shooter.enemy;
+                Bullet bulletController = bullet.GetComponent<Bullet>(); 
+                    
+                bulletController.shooter = Bullet.Shooter.enemy;
+                bulletController.bulletSpeed = stats.bulletSpeed;
+                bulletController.shootKnockback = stats.rangeKnockback;
+                bulletController.shootDamage = stats.rangeDamage;
 
                 shootingCooldown = 0f;
             }
             else if (stats.shootType == EnemyStats.ShootType.launcher)
             {
                 GameObject instantiatedProjectile = Instantiate(bulletPrefab, attackPoint.position, attackPoint.rotation);
-                instantiatedProjectile.GetComponent<Rocket>().shooter = Rocket.Shooter.enemy;
+                Rocket rocketController = instantiatedProjectile.GetComponent<Rocket>();
+                
+                rocketController.shooter = Rocket.Shooter.enemy;
+                rocketController.rocketSpeed = stats.bulletSpeed;
+                rocketController.shootKnockback = stats.rangeKnockback;
+                rocketController.shootDamage = stats.rangeDamage;
 
                 instantiatedProjectile.GetComponent<Rigidbody2D>().velocity = instantiatedProjectile.transform.right * stats.bulletSpeed / 2;
+
                 // Ignore collisions between the missile and the character controller
                 Physics2D.IgnoreCollision(instantiatedProjectile.GetComponent<BoxCollider2D>(), transform.GetComponent<CapsuleCollider2D>());
 

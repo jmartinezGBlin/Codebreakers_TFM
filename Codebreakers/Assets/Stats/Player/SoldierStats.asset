@@ -21,7 +21,7 @@ MonoBehaviour:
   meleeKnockback: 400
   shootType: 0
   rangedRange: 4
-  rangeAttackRate: 0.25
+  rangeAttackRate: 0.5
   rangeDamage: 25
   rangeKnockback: 0
   bulletSpeed: 20

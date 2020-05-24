@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: StaticEnemy
   m_EditorClassIdentifier: 
   healthPoints: 100
-  moveSpeed: 400
-  maxRunSpeed: 5
-  patrolSpeed: 300
-  maxWalkSpeed: 2
+  moveSpeed: 0
+  maxRunSpeed: 0
+  patrolSpeed: 0
+  maxWalkSpeed: 0
   jumpHeight: 10
   maxAngle: 35
   lookRange: 15

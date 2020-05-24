@@ -11,6 +11,8 @@ public class GameController : MonoBehaviour
     public int gameLevel = 1;
     public int levelScene = 1;
 
+    public bool aimBuff = false;
+
     private void Awake()
     {
         if (instance == null)

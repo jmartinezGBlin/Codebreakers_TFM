@@ -11,7 +11,7 @@ public class SceneController : MonoBehaviour
 	public void NewGame()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("TestScene");
+        SceneManager.LoadScene("Level 1-1");
     }
 
     /// <summary>

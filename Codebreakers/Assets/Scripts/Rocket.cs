@@ -14,10 +14,10 @@ public class Rocket : MonoBehaviour
 
     [HideInInspector] public Shooter shooter;
 
-    private float rocketSpeed;
+    [HideInInspector] public float rocketSpeed;
     private float rocketLife;
-    private float shootKnockback;
-    private int shootDamage;
+    [HideInInspector] public float shootKnockback;
+    [HideInInspector] public int shootDamage;
     private float time = 0f;
     private float aimingTime = 0.3f;
     private Transform target;
@@ -26,21 +26,21 @@ public class Rocket : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        rocketLife = 10f;
         if (shooter == Shooter.player)
         {
             PlayerStats stats = FindObjectOfType<CharacterController2D>().stats;
             rocketSpeed = stats.bulletSpeed;
-            rocketLife = 10f;
             shootKnockback = stats.rangeKnockback;
             shootDamage = stats.rangeDamage;
         }
         else if (shooter == Shooter.enemy)
         {
-            EnemyStats stats = FindObjectOfType<EnemyAIController>().stats;
+           /* EnemyStats stats = FindObjectOfType<EnemyAIController>().stats;
             rocketSpeed = stats.bulletSpeed;
             rocketLife = 10f;
             shootKnockback = stats.rangeKnockback;
-            shootDamage = stats.rangeDamage;
+            shootDamage = stats.rangeDamage;*/
             target = GameObject.FindGameObjectWithTag("Player").transform;
         }
         

@@ -22,7 +22,8 @@ public class PlayerCombat : MonoBehaviour
     [HideInInspector] public bool attacking;
     [HideInInspector] public bool aiming;
     [HideInInspector] public bool aimingRight;
-    [HideInInspector] private bool invulnerable = false;
+    [HideInInspector] public bool aimingBuff;
+
 
 
     private CharacterController2D characterController;
@@ -35,7 +36,8 @@ public class PlayerCombat : MonoBehaviour
     private Color rendColor;
     private Animator anim;
     private Renderer[] rends;
-    
+    private bool invulnerable = false;
+
 
     private void Start()
     {
@@ -52,9 +54,10 @@ public class PlayerCombat : MonoBehaviour
         {
             GameController.instance.actualHealth = characterController.stats.healthPoints;
         }
-        actualHealth = GameController.instance.actualHealth;
+        actualHealth = GameController.instance.actualHealth;        
 
         healthBar.fillAmount = (float)actualHealth/(float)characterController.stats.healthPoints;
+        aimingBuff = GameController.instance.aimBuff;
     }
 
     // Update is called once per frame
@@ -63,7 +66,7 @@ public class PlayerCombat : MonoBehaviour
         if (characterController.dead || characterController.stopInput)
             return;
 
-        if (Input.GetButton("Fire2"))
+        if (Input.GetButton("Fire2") && aimingBuff)
         {
             aiming = true;
             laserAim.EnableLaser();
@@ -87,7 +90,7 @@ public class PlayerCombat : MonoBehaviour
             shootCooldown += Time.deltaTime;
 
 
-        if (Input.GetKeyDown(KeyCode.E) && attackCooldown >= characterController.stats.meleeSpeedAttack)
+        if (Input.GetKeyDown(KeyCode.X) && attackCooldown >= characterController.stats.meleeSpeedAttack)
         {
             Attack();
             attackCooldown = 0f;

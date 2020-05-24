@@ -13,16 +13,17 @@ public class Bullet : MonoBehaviour
     }
 
     [HideInInspector] public Shooter shooter;
-    
-    private float bulletSpeed;
+
+    [HideInInspector] public float bulletSpeed;
     private float bulletLifeSpawn;
-    private float shootKnockback;
-    private int shootDamage;
+    [HideInInspector] public float shootKnockback;
+    [HideInInspector] public int shootDamage;
     private float bulletLife = 0f;
 
     // Start is called before the first frame update
     void Start()
     {
+        bulletLifeSpawn = 10f;
         if (shooter == Shooter.player)
         {
             PlayerStats stats = FindObjectOfType<CharacterController2D>().stats;
@@ -31,7 +32,7 @@ public class Bullet : MonoBehaviour
             shootKnockback = stats.rangeKnockback;
             shootDamage = stats.rangeDamage;
         }
-        else if (shooter == Shooter.enemy)
+       /* else if (shooter == Shooter.enemy)
         {
             EnemyStats stats = FindObjectOfType<EnemyAIController>().stats;
             bulletSpeed = stats.bulletSpeed;
@@ -39,7 +40,7 @@ public class Bullet : MonoBehaviour
             shootKnockback = stats.rangeKnockback;
             shootDamage = stats.rangeDamage;
         }
-
+        */
         rb = GetComponent<Rigidbody2D>();
         rb.velocity = transform.right * bulletSpeed;
     }
