@@ -10,8 +10,8 @@ public class GameController : MonoBehaviour
     public bool firstLevel = true;
     public int gameLevel = 1;
     public int levelScene = 1;
-
     public bool aimBuff = false;
+
 
     private void Awake()
     {
