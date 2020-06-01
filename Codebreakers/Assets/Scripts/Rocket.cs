@@ -36,12 +36,12 @@ public class Rocket : MonoBehaviour
         }
         else if (shooter == Shooter.enemy)
         {
-           /* EnemyStats stats = FindObjectOfType<EnemyAIController>().stats;
-            rocketSpeed = stats.bulletSpeed;
-            rocketLife = 10f;
-            shootKnockback = stats.rangeKnockback;
-            shootDamage = stats.rangeDamage;*/
-            target = GameObject.FindGameObjectWithTag("Player").transform;
+            /* EnemyStats stats = FindObjectOfType<EnemyAIController>().stats;
+             rocketSpeed = stats.bulletSpeed;
+             rocketLife = 10f;
+             shootKnockback = stats.rangeKnockback;
+             shootDamage = stats.rangeDamage;*/
+            target = GameObject.FindObjectOfType<PlayerCombat>().target;
         }
         
         rb = GetComponent<Rigidbody2D>();

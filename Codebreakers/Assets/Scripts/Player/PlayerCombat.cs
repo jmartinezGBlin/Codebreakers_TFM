@@ -7,6 +7,7 @@ public class PlayerCombat : MonoBehaviour
 {
     public Transform shootingPoint;
     public Transform attackPoint;
+    public Transform target;
     public GameObject bulletPrefab;
     public LayerMask enemyLayers;
     public Image healthBar;

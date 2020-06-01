@@ -33,7 +33,7 @@ MonoBehaviour:
   meleeDamage: 0
   meleeKnockback: 0
   shootType: 2
-  bulletSpeed: 4
+  bulletSpeed: 10
   rangedRange: 15
   rangeAttackRate: 4
   rangeDamage: 30
