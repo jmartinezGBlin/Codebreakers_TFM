@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Projectile
   - Spawnable
+  - Protection
   layers:
   - Default
   - TransparentFX

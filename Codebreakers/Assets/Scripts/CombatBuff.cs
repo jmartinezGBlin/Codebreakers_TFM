@@ -10,7 +10,11 @@ public class CombatBuff : MonoBehaviour
     {
         if (collision.GetComponent<PlayerCombat>() != null)
         {
-            tutorialText.SetActive(true);
+            if (tutorialText != null)
+            {
+                tutorialText.SetActive(true);
+            }
+
             collision.GetComponent<PlayerCombat>().aimingBuff = true;
             GameController.instance.aimBuff = true;
             Destroy(gameObject);

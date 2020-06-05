@@ -18,6 +18,8 @@ public class Boss_Heal : StateMachineBehaviour
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
         rb.simulated = false;
 
+        boss.inHeal = true;
+        boss.SpawnAntennas();
         protectionOrb = Instantiate(boss.protectionOrbPrefab, boss.transform.position + new Vector3(0,1.5f,0) , boss.transform.rotation);
     }
 
@@ -25,6 +27,10 @@ public class Boss_Heal : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         boss.InstantiateOrbAttack();
+        if (GameObject.FindGameObjectsWithTag("Protection").Length == 0)
+        {
+            animator.SetTrigger("FinishHeal");
+        }
 
     }
 
@@ -33,6 +39,8 @@ public class Boss_Heal : StateMachineBehaviour
     {
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         rb.simulated = true;
+        boss.ResetIdle();
+        animator.ResetTrigger("FinishHeal");
         Destroy(protectionOrb);
     }
 

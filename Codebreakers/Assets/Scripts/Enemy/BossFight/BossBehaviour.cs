@@ -1,12 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BossBehaviour : MonoBehaviour
 {
     public EnemyStats stats;
     public GameObject protectionOrbPrefab;
+    public GameObject[] antennaProtectionPrefabs;
     public GameObject healAttackPrefab;
+    public Transform centerPoint;
+    public Image healthBar;
 
     [SerializeField] private Transform attackPoint;
     [SerializeField] private Transform shootPoint;
@@ -21,6 +25,8 @@ public class BossBehaviour : MonoBehaviour
 
     [HideInInspector] public bool inRage = false;
     [HideInInspector] public bool backing = false;
+    [HideInInspector] public bool towardsPlayer = false;
+    [HideInInspector] public bool inHeal = false;
 
     private int actualHealth;
 
@@ -54,17 +60,19 @@ public class BossBehaviour : MonoBehaviour
         decisionTime = Random.Range(0.5f, 1.5f);
         rageDecisionTime = Random.Range(0f, 1f);
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
+
+        healthBar.fillAmount = (float)actualHealth / (float)stats.healthPoints;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (actualHealth <= stats.healthPoints)
+        if (actualHealth <= stats.healthPoints/2)
             inRage = true;
         else
             inRage = false;
 
-        if (inRage)
+        if (!inRage)
         {
             attackRate = .33f;
             shootRate = .67f;
@@ -85,9 +93,9 @@ public class BossBehaviour : MonoBehaviour
             {
                 idleTime = 0f;
                 idle = false;
-                /*
                 if (Random.Range(0, .99f) < attackRate)
                 {
+                    towardsPlayer = true;
                     anim.SetTrigger("ToMove");
                 }
                 else if (Random.Range(0, .99f) < (attackRate + shootRate))
@@ -96,11 +104,9 @@ public class BossBehaviour : MonoBehaviour
                 }
                 else
                 {
-                    anim.SetTrigger("ToHeal");
-                }*/
-
-                rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-                anim.SetTrigger("ToHeal");
+                    towardsPlayer = false;
+                    anim.SetTrigger("ToMove");
+                }
             }
             else
                 idleTime += Time.deltaTime;
@@ -165,7 +171,7 @@ public class BossBehaviour : MonoBehaviour
     public void Jump()
     {
         //Nos aseguramos de que solo añade el impulso cuando no tiene velocidad en y
-        if (Mathf.Abs(rb.velocity.y) <= 0.1f)
+        if (Mathf.Abs(rb.velocity.y) <= 0.5f)
             rb.AddForce(Vector2.up * stats.jumpHeight, ForceMode2D.Impulse);
     }
 
@@ -193,9 +199,12 @@ public class BossBehaviour : MonoBehaviour
     {
         if (dead)
             return;
+
         actualHealth -= damage;
+
+        healthBar.fillAmount = (float)actualHealth / stats.healthPoints;
         //if (actualHealth <= 0)
-            //Die();
+        //Die();
     }
 
     public void InstantiateOrbAttack()
@@ -214,9 +223,12 @@ public class BossBehaviour : MonoBehaviour
         }
         else
             spawnTime += Time.deltaTime;
-
-        
     }
 
+    public void SpawnAntennas()
+    {
+        antennaProtectionPrefabs[0].SetActive(true);
+        antennaProtectionPrefabs[1].SetActive(true);
+    }
 
 }

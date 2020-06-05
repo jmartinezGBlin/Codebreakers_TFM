@@ -74,6 +74,7 @@ public class Bullet : MonoBehaviour
         {
             EnemyAIController enemy = collision.GetComponent<EnemyAIController>();
             BossBehaviour boss = collision.GetComponent<BossBehaviour>();
+            ProtectionAntenna antenna = collision.GetComponent<ProtectionAntenna>();
 
             if (enemy != null)
             {
@@ -88,8 +89,14 @@ public class Bullet : MonoBehaviour
                 Destroy(gameObject);
             }
 
-        /*    if (!collision.CompareTag("Player"))
-                Destroy(gameObject);*/
+            if (antenna != null)
+            {
+                antenna.TakeDamage(shootDamage);
+                Destroy(gameObject);
+            }
+
+            /*    if (!collision.CompareTag("Player"))
+                    Destroy(gameObject);*/
         }
         else
         {

@@ -22,16 +22,32 @@ public class Boss_Run : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         boss.LookAtPlayer();
-        Vector2 target = new Vector2(player.position.x, rb.position.y);
+        Vector2 target;
+
+        if (boss.towardsPlayer)
+            target = new Vector2(player.position.x, rb.position.y);
+        else
+            target = new Vector2(boss.centerPoint.position.x, rb.position.y);
+
         Vector2 newPos = Vector2.MoveTowards(rb.position, target, boss.stats.moveSpeed * Time.fixedDeltaTime);
 
         rb.MovePosition(newPos);
 
-
-        //Check distance to Player
-        if (Vector2.Distance(player.position, rb.position) <= boss.stats.nextWaypointDistance)
+        if (boss.towardsPlayer)
         {
-            animator.SetTrigger("ToAttack");
+            //Check distance to Player
+            if (Vector2.Distance(player.position, rb.position) <= boss.stats.nextWaypointDistance)
+            {
+                animator.SetTrigger("ToAttack");
+            }
+        }
+        else
+        {
+            //Check distance to Center
+            if (Vector2.Distance(boss.centerPoint.position, rb.position) <= 0.5f)
+            {
+                animator.SetTrigger("ToHeal");
+            }
         }
     }
 
@@ -39,6 +55,7 @@ public class Boss_Run : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.ResetTrigger("ToAttack");
+        animator.ResetTrigger("ToHeal");
     }
 
    
