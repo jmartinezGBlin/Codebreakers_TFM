@@ -73,10 +73,18 @@ public class Bullet : MonoBehaviour
         if (shooter == Shooter.player)
         {
             EnemyAIController enemy = collision.GetComponent<EnemyAIController>();
+            BossBehaviour boss = collision.GetComponent<BossBehaviour>();
+
             if (enemy != null)
             {
                 Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized * shootKnockback;
                 enemy.TakeDamage(shootDamage, knockbackDirection);
+                Destroy(gameObject);
+            }
+
+            if (boss != null)
+            {
+                boss.TakeDamage(shootDamage);
                 Destroy(gameObject);
             }
 

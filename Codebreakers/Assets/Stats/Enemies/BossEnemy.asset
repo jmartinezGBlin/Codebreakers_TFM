@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c136029e29919f0458d852c0455be9ca, type: 3}
+  m_Name: BossEnemy
+  m_EditorClassIdentifier: 
+  healthPoints: 1000
+  moveSpeed: 8
+  maxRunSpeed: 10
+  patrolSpeed: 80
+  maxWalkSpeed: 2
+  jumpHeight: 15
+  maxAngle: 360
+  lookRange: 100
+  jumpRange: 2.5
+  nextWaypointDistance: 5
+  timeChaseLost: 2
+  bossFight: 1
+  canMove: 1
+  canJump: 0
+  canFly: 0
+  meleeAttack: 1
+  rangedAttack: 1
+  meleeRange: 1
+  meleeSpeedAttack: 2
+  meleeDamage: 30
+  meleeKnockback: 2000
+  shootType: 0
+  bulletSpeed: 30
+  rangedRange: 100
+  rangeAttackRate: 1
+  rangeDamage: 20
+  rangeKnockback: 0.1
