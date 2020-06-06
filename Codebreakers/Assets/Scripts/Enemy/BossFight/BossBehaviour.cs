@@ -11,6 +11,7 @@ public class BossBehaviour : MonoBehaviour
     public GameObject healAttackPrefab;
     public Transform centerPoint;
     public Image healthBar;
+    public Animator door;
 
     [SerializeField] private Transform attackPoint;
     [SerializeField] private Transform shootPoint;
@@ -18,10 +19,13 @@ public class BossBehaviour : MonoBehaviour
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private bool isFlipped = false;
+    [SerializeField] private float groundRadious;
+    [SerializeField] private LayerMask whatIsGround;
 
     private Transform player;
     private Rigidbody2D rb;
     private Animator anim;
+    private bool m_Grounded;
 
     [HideInInspector] public bool inRage = false;
     [HideInInspector] public bool backing = false;
@@ -29,6 +33,8 @@ public class BossBehaviour : MonoBehaviour
     [HideInInspector] public bool inHeal = false;
 
     private int actualHealth;
+    private bool firstRage = true;
+    private bool inFight = false;
 
     private float attackRate = .33f;
     private float shootRate = .67f;
@@ -59,7 +65,7 @@ public class BossBehaviour : MonoBehaviour
 
         decisionTime = Random.Range(0.5f, 1.5f);
         rageDecisionTime = Random.Range(0f, 1f);
-        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
         healthBar.fillAmount = (float)actualHealth / (float)stats.healthPoints;
     }
@@ -67,6 +73,9 @@ public class BossBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (dead)
+            return;
+
         if (actualHealth <= stats.healthPoints/2)
             inRage = true;
         else
@@ -85,33 +94,56 @@ public class BossBehaviour : MonoBehaviour
             healRate = .25f;
         }
 
-        if (idle)
+        if (OnGround())
         {
-            LookAtPlayer();
-            
-            if ((!inRage && idleTime >= decisionTime) || (inRage && idleTime >= rageDecisionTime))
+            if (!inFight)
             {
-                idleTime = 0f;
-                idle = false;
-                if (Random.Range(0, .99f) < attackRate)
+                inFight = true;
+                anim.SetTrigger("InFight");
+                rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            }
+
+            if (inHeal)
+                inHeal = false;
+
+
+            if (idle && !inHeal)
+            {
+                LookAtPlayer();
+
+                if ((!inRage && idleTime >= decisionTime) || (inRage && idleTime >= rageDecisionTime))
                 {
-                    towardsPlayer = true;
-                    anim.SetTrigger("ToMove");
-                }
-                else if (Random.Range(0, .99f) < (attackRate + shootRate))
-                {
-                    anim.SetTrigger("ToShoot");
+                    idleTime = 0f;
+                    idle = false;
+
+                    if (inRage && firstRage)
+                    {
+                        firstRage = false;
+                        towardsPlayer = false;
+                        anim.SetTrigger("ToMove");
+                    }
+                    else
+                    {
+                        if (Random.Range(0, .99f) < attackRate)
+                        {
+                            towardsPlayer = true;
+                            anim.SetTrigger("ToMove");
+                        }
+                        else if (Random.Range(0, .99f) < (attackRate + shootRate))
+                        {
+                            anim.SetTrigger("ToShoot");
+                        }
+                        else
+                        {
+                            towardsPlayer = false;
+                            anim.SetTrigger("ToMove");
+                        }
+                    }
                 }
                 else
-                {
-                    towardsPlayer = false;
-                    anim.SetTrigger("ToMove");
-                }
+                    idleTime += Time.deltaTime;
             }
-            else
-                idleTime += Time.deltaTime;
         }
-        
     }
 
     public void ResetIdle()
@@ -197,15 +229,36 @@ public class BossBehaviour : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (dead)
+        if (dead || inHeal)
             return;
 
         actualHealth -= damage;
 
         healthBar.fillAmount = (float)actualHealth / stats.healthPoints;
-        //if (actualHealth <= 0)
-        //Die();
+
+        if (actualHealth <= 0)
+            Die();
     }
+
+    private void Die()
+    {
+        StopAllCoroutines();
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        rb.velocity = Vector3.zero;
+        rb.simulated = false;
+        GetComponent<CapsuleCollider2D>().enabled = false;
+
+        dead = true;
+        anim.SetTrigger("die");
+        Invoke("OpenDoor", 2f);
+    }
+
+    private void OpenDoor()
+    {
+        door.SetTrigger("Open");
+    }
+    
+
 
     public void InstantiateOrbAttack()
     {
@@ -229,6 +282,30 @@ public class BossBehaviour : MonoBehaviour
     {
         antennaProtectionPrefabs[0].SetActive(true);
         antennaProtectionPrefabs[1].SetActive(true);
+    }
+
+
+    private bool OnGround()
+    {
+        m_Grounded = false;
+
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, groundRadious, whatIsGround);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].gameObject != gameObject)
+                m_Grounded = true;
+            
+        }
+
+        if (m_Grounded)
+            rb.gravityScale = 1f;
+        else
+            rb.gravityScale = 3f;
+
+        Debug.Log(m_Grounded);
+
+        return m_Grounded;
+
     }
 
 }

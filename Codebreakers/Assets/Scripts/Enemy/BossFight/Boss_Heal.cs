@@ -39,9 +39,16 @@ public class Boss_Heal : StateMachineBehaviour
     {
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         rb.simulated = true;
+
+        Destroy(protectionOrb);
+
+        foreach (GameObject item in GameObject.FindGameObjectsWithTag("Spawnable"))
+        {
+            Destroy(item);
+        }
+
         boss.ResetIdle();
         animator.ResetTrigger("FinishHeal");
-        Destroy(protectionOrb);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

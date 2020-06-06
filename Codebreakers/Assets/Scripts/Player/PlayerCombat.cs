@@ -166,6 +166,12 @@ public class PlayerCombat : MonoBehaviour
             Die();
     }
 
+    public void Heal(int hp)
+    {
+        actualHealth += hp;
+        healthBar.fillAmount = (float)actualHealth / characterController.stats.healthPoints;
+    }
+
     IEnumerator InvulnerableFrames()
     {
         anim.SetTrigger("hit");

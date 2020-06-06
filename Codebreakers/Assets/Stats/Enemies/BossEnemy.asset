@@ -13,17 +13,16 @@ MonoBehaviour:
   m_Name: BossEnemy
   m_EditorClassIdentifier: 
   healthPoints: 1000
-  moveSpeed: 8
+  moveSpeed: 15
   maxRunSpeed: 10
   patrolSpeed: 80
   maxWalkSpeed: 2
-  jumpHeight: 15
+  jumpHeight: 25
   maxAngle: 360
   lookRange: 100
   jumpRange: 2.5
   nextWaypointDistance: 5
   timeChaseLost: 2
-  bossFight: 1
   canMove: 1
   canJump: 0
   canFly: 0
