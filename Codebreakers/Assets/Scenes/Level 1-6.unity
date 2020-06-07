@@ -2270,6 +2270,12 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!82 &148470090 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 3537928190035073930, guid: c1f1097e49e66274485fb5886e8ef54f,
+    type: 3}
+  m_PrefabInstance: {fileID: 2380093092208835754}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &160195062 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5449986705746774230, guid: 780a71f223f1ed8409020a04e20c2c25,
@@ -2555,6 +2561,7 @@ GameObject:
   - component: {fileID: 753554789}
   - component: {fileID: 753554788}
   - component: {fileID: 753554787}
+  - component: {fileID: 753554790}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -2778,6 +2785,102 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!82 &753554790
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 753554785}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 070779cdcfbe3ff4688691fb33bc3e4e, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.5
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &756880147 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2380093093668190778, guid: c1f1097e49e66274485fb5886e8ef54f,
@@ -25635,6 +25738,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -2479976147135216657, guid: fd78a7a7fb35c7944bda15883b49f5eb,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: ec257a50fb712e54b9234eae891112f7, type: 3}
     - target: {fileID: 2317991351895286031, guid: fd78a7a7fb35c7944bda15883b49f5eb,
         type: 3}
       propertyPath: m_Name
@@ -26459,7 +26567,12 @@ PrefabInstance:
         type: 3}
       propertyPath: door
       value: 
-      objectReference: {fileID: 753554787}
+      objectReference: {fileID: 753554785}
+    - target: {fileID: 8607840451505787128, guid: c1f1097e49e66274485fb5886e8ef54f,
+        type: 3}
+      propertyPath: dieAudio
+      value: 
+      objectReference: {fileID: 148470090}
     - target: {fileID: 2380093093444520632, guid: c1f1097e49e66274485fb5886e8ef54f,
         type: 3}
       propertyPath: m_LocalRotation.z

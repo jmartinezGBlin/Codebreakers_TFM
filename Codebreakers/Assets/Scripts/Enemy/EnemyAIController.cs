@@ -13,6 +13,10 @@ public class EnemyAIController : MonoBehaviour
     public GameObject bulletPrefab;
     public LayerMask playerLayer;
 
+    public AudioSource shootAudio;
+    public AudioSource meleeAudio;
+    public AudioSource hitAudio;
+
     [HideInInspector] public EnemyMovement enemyMovement;
     [HideInInspector] public Rigidbody2D rb;
     [HideInInspector] public Transform spawnPoint;
@@ -102,6 +106,10 @@ public class EnemyAIController : MonoBehaviour
         if (dead)
             return;
 
+        if (hitAudio != null)
+            hitAudio.Play();
+
+
         if (stats.canMove)
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         else
@@ -162,6 +170,11 @@ public class EnemyAIController : MonoBehaviour
     {
         if (shootingCooldown >= stats.rangeAttackRate)
         {
+            if (shootAudio != null)
+            {
+                shootAudio.Play();
+            }
+
             if (stats.shootType == EnemyStats.ShootType.bullet)
             {
                 GameObject bullet = Instantiate(bulletPrefab, attackPoint.position, attackPoint.rotation);
@@ -215,6 +228,11 @@ public class EnemyAIController : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         else
             yield return new WaitForSeconds(0.17f);
+
+        if (meleeAudio != null)
+        {
+            meleeAudio.Play();
+        }
 
         Collider2D hitPlayer = Physics2D.OverlapCircle(attackPoint.position, stats.meleeRange, playerLayer);
 

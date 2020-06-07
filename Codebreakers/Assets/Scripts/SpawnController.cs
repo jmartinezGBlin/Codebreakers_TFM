@@ -27,6 +27,7 @@ public class SpawnController : MonoBehaviour
         if (enemies.Length == 0 && levelOn)
         {
             door.GetComponent<Animator>().SetTrigger("Open");
+            door.GetComponent<AudioSource>().Play();
         }
         
     }

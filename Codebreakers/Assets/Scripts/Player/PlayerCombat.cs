@@ -20,6 +20,10 @@ public class PlayerCombat : MonoBehaviour
 
     public Laser laserAim;
 
+    public AudioSource shootingAudio;
+    public AudioSource meleeAudio;
+    public AudioSource shootDamage;
+
     [HideInInspector] public bool attacking;
     [HideInInspector] public bool aiming;
     [HideInInspector] public bool aimingRight;
@@ -104,6 +108,7 @@ public class PlayerCombat : MonoBehaviour
     {
         if (characterController.stats.shootType == PlayerStats.ShootType.bullet)
         {
+            shootingAudio.Play();
             GameObject bullet = Instantiate(bulletPrefab, shootingPoint.position, shootingPoint.rotation);
             bullet.GetComponent<Bullet>().shooter = Bullet.Shooter.player;
         }
@@ -137,6 +142,7 @@ public class PlayerCombat : MonoBehaviour
         anim.SetTrigger("attack");
         yield return new WaitForSeconds(damageTime);
 
+        meleeAudio.Play();
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, characterController.stats.meleeRange, enemyLayers);
 
         foreach (Collider2D enemy in hitEnemies)
@@ -156,8 +162,9 @@ public class PlayerCombat : MonoBehaviour
             return;
 
         actualHealth -= damage;
-        
         healthBar.fillAmount = (float) actualHealth/characterController.stats.healthPoints;
+
+        shootDamage.Play();
 
         StartCoroutine("InvulnerableFrames");
         rb.AddForce(knockback);

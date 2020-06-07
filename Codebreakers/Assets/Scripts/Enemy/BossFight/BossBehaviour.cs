@@ -11,7 +11,11 @@ public class BossBehaviour : MonoBehaviour
     public GameObject healAttackPrefab;
     public Transform centerPoint;
     public Image healthBar;
-    public Animator door;
+    public GameObject door;
+
+    public AudioSource shootingAudio;
+    public AudioSource meleeAudio;
+    public AudioSource dieAudio;
 
     [SerializeField] private Transform attackPoint;
     [SerializeField] private Transform shootPoint;
@@ -178,6 +182,7 @@ public class BossBehaviour : MonoBehaviour
 
     public void Attack()
     {
+        meleeAudio.Play();
         Collider2D hitPlayer = Physics2D.OverlapCircle(attackPoint.position, stats.meleeRange, playerLayer);
 
         if (hitPlayer != null)
@@ -191,6 +196,7 @@ public class BossBehaviour : MonoBehaviour
 
     public void Shoot()
     {
+        shootingAudio.Play();
         GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation);
         Bullet bulletController = bullet.GetComponent<Bullet>();
 
@@ -253,9 +259,15 @@ public class BossBehaviour : MonoBehaviour
         Invoke("OpenDoor", 2f);
     }
 
+    public void PlayDieAudio()
+    {
+        dieAudio.Play();
+    }
+
     private void OpenDoor()
     {
-        door.SetTrigger("Open");
+        door.GetComponent<Animator>().SetTrigger("Open");
+        door.GetComponent<AudioSource>().Play();
     }
     
 

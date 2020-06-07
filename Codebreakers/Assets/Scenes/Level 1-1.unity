@@ -43159,5 +43159,54 @@ PrefabInstance:
       propertyPath: laserAim
       value: 
       objectReference: {fileID: 1913482096}
+    - target: {fileID: 2600554643787152739, guid: 338b2a02a7146da46b0188b2e9810635,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.63923335
+      objectReference: {fileID: 0}
+    - target: {fileID: 2600554643787152739, guid: 338b2a02a7146da46b0188b2e9810635,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.76901287
+      objectReference: {fileID: 0}
+    - target: {fileID: 7006223113496477968, guid: 338b2a02a7146da46b0188b2e9810635,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.017626222
+      objectReference: {fileID: 0}
+    - target: {fileID: 827892309200485565, guid: 338b2a02a7146da46b0188b2e9810635,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.94833183
+      objectReference: {fileID: 0}
+    - target: {fileID: 827892309200485565, guid: 338b2a02a7146da46b0188b2e9810635,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.31728035
+      objectReference: {fileID: 0}
+    - target: {fileID: 4866921718619219475, guid: 338b2a02a7146da46b0188b2e9810635,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.25105014
+      objectReference: {fileID: 0}
+    - target: {fileID: 4866921718619219475, guid: 338b2a02a7146da46b0188b2e9810635,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.96797407
+      objectReference: {fileID: 0}
+    - target: {fileID: 604449217, guid: 338b2a02a7146da46b0188b2e9810635, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.03873922
+      objectReference: {fileID: 0}
+    - target: {fileID: 132730301496322876, guid: 338b2a02a7146da46b0188b2e9810635,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8096956652523820698, guid: 338b2a02a7146da46b0188b2e9810635,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.65
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 338b2a02a7146da46b0188b2e9810635, type: 3}
