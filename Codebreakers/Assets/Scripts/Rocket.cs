@@ -11,13 +11,13 @@ public class Rocket : MonoBehaviour
         player,
         enemy
     }
-
     [HideInInspector] public Shooter shooter;
-
     [HideInInspector] public float rocketSpeed;
-    private float rocketLife;
     [HideInInspector] public float shootKnockback;
     [HideInInspector] public int shootDamage;
+
+
+    private float rocketLife;
     private float time = 0f;
     private float aimingTime = 0.3f;
     private Transform target;
@@ -36,11 +36,6 @@ public class Rocket : MonoBehaviour
         }
         else if (shooter == Shooter.enemy)
         {
-            /* EnemyStats stats = FindObjectOfType<EnemyAIController>().stats;
-             rocketSpeed = stats.bulletSpeed;
-             rocketLife = 10f;
-             shootKnockback = stats.rangeKnockback;
-             shootDamage = stats.rangeDamage;*/
             target = GameObject.FindObjectOfType<PlayerCombat>().target;
         }
         
@@ -56,9 +51,7 @@ public class Rocket : MonoBehaviour
             if (time >= aimingTime &! targetAcquired)
                 AimForTarget();
 
-
             time += Time.deltaTime;
-
         }
 
     }
@@ -84,7 +77,7 @@ public class Rocket : MonoBehaviour
     {
         Debug.Log(collision.gameObject.name);
 
-        if (collision.gameObject.CompareTag("Obstacle"))
+        if (!collision.gameObject.CompareTag("Player"))
             Destroy(gameObject);
 
 

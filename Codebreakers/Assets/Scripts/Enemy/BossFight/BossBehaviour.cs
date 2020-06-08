@@ -46,6 +46,7 @@ public class BossBehaviour : MonoBehaviour
 
     private float randomState;
     private bool idle = true;
+    private bool rageAttackLast = false;
 
     // Timer de decisión desde el estado IDLE
     private float decisionTime;
@@ -93,9 +94,9 @@ public class BossBehaviour : MonoBehaviour
         }
         else
         {
-            attackRate = .25f;
-            shootRate = .5f;
-            healRate = .25f;
+            attackRate = .3f;
+            shootRate = .55f;
+            healRate = .15f;
         }
 
         if (OnGround())
@@ -131,16 +132,27 @@ public class BossBehaviour : MonoBehaviour
                         if (Random.Range(0, .99f) < attackRate)
                         {
                             towardsPlayer = true;
+                            rageAttackLast = false;
                             anim.SetTrigger("ToMove");
                         }
                         else if (Random.Range(0, .99f) < (attackRate + shootRate))
                         {
+                            rageAttackLast = false;
                             anim.SetTrigger("ToShoot");
                         }
                         else
                         {
-                            towardsPlayer = false;
-                            anim.SetTrigger("ToMove");
+                            if (!rageAttackLast)
+                            {
+                                rageAttackLast = true;
+                                towardsPlayer = false;
+                                anim.SetTrigger("ToMove");
+                            }
+                            else
+                            {
+                                rageAttackLast = false;
+                                anim.SetTrigger("ToShoot");
+                            }
                         }
                     }
                 }
